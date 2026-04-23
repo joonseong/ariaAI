@@ -14,6 +14,9 @@ android/
 .env
 .env.local
 
+# claude code local settings
+.claude/settings.local.json
+
 # phase execution outputs
 phases/**/phase*-output.json
 phases/**/step*-output.json
