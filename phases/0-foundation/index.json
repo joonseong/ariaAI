@@ -2,13 +2,48 @@
   "project": "Aria",
   "phase": "0-foundation",
   "steps": [
-    { "step": 0, "name": "project-setup", "status": "pending" },
-    { "step": 1, "name": "core-types", "status": "pending" },
-    { "step": 2, "name": "lib-core", "status": "pending" },
-    { "step": 3, "name": "firebase-config", "status": "pending" },
-    { "step": 4, "name": "auth-service", "status": "pending" },
-    { "step": 5, "name": "auth-store-hook", "status": "pending" },
-    { "step": 6, "name": "ui-foundation", "status": "pending" },
-    { "step": 7, "name": "auth-screens", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "project-setup",
+      "status": "completed",
+      "started_at": "2026-04-24T00:49:01+0900",
+      "summary": "Expo SDK 54 프로젝트 초기화, NativeWind v4/TypeScript strict/Jest/Zustand/Firebase SDK 설정 완료, ARCHITECTURE.md 디렉토리 구조 생성"
+    },
+    {
+      "step": 1,
+      "name": "core-types",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "lib-core",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "firebase-config",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "auth-service",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "name": "auth-store-hook",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "name": "ui-foundation",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "name": "auth-screens",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-24T00:49:01+0900"
 }
