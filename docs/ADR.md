@@ -336,9 +336,18 @@ guestbooks.messages.authorNickname  ← users.nickname
 - 복합 키워드 검색 불가 ("환상 숲" → AND 검색 미지원)
 
 **v2 마이그레이션 계획**:
-- Algolia 또는 Typesense 도입
-- Firestore → 검색 엔진 데이터 동기화 (Cloud Function 트리거)
-- services/search.ts만 교체하면 됨 (훅/화면 변경 불필요)
+- Algolia 도입 (Typesense는 셀프 호스팅 필요 → 초보자에게 비추)
+- Firestore → Algolia 데이터 동기화: Cloud Function으로 자동화
+  - `onArtworkCreated` → Algolia에 인덱스 추가
+  - `onArtworkUpdated` → Algolia 인덱스 업데이트
+  - `onArtworkDeleted` → Algolia 인덱스 삭제
+- `services/search.ts`만 교체하면 됨 (훅/화면 변경 불필요)
+- 필요 API 키: `ALGOLIA_APP_ID`, `ALGOLIA_API_KEY` (.env에 추가)
+- 예상 비용: 무료 한도 월 10,000건 검색, 유료 월 $29~
+
+> **초보자 참고**: Algolia는 별도 가입이 필요한 외부 서비스입니다.
+> MVP에서는 사용하지 않으므로 가입할 필요 없습니다.
+> 검색 로직을 `services/search.ts`에 격리해두면 나중에 이 파일만 교체하면 됩니다.
 
 ---
 
@@ -401,3 +410,33 @@ guestbooks.messages.authorNickname  ← users.nickname
 - Firebase Analytics는 퍼널 분석, 코호트 분석 등 고급 분석에 약함 → BigQuery 내보내기로 보완 가능 (Blaze 플랜)
 - Amplitude/Mixpanel 대비 리텐션 분석 기능 부족 → MVP 수준에서는 기본 지표면 충분
 - 이벤트 디버깅이 Firebase Debug View에서 약간 불편 → 개발 단계에서 console 로깅 병행
+
+---
+
+### ADR-015: 푸시 알림 — Firebase Cloud Messaging (FCM)
+- **날짜**: 2026-04-24
+- **상태**: 승인 (v2 구현 예정, 아키텍처 사전 설계)
+- **결정**: Firebase Cloud Messaging + expo-notifications 사용
+
+**이유**
+1. Firebase 프로젝트에 이미 포함 (추가 비용 없음)
+2. Expo에서 expo-notifications로 간편하게 연동 가능
+3. iOS APNs + Android FCM 모두 단일 API로 처리
+4. Cloud Functions와 자연스럽게 연동 (이벤트 트리거 → 알림 전송)
+
+**대안 검토**
+
+| 대안 | 장점 | 단점 | 결론 |
+|------|------|------|------|
+| OneSignal | 관리 대시보드 편리 | 별도 서비스 의존, 무료 한도 제한 | 기각 |
+| AWS SNS | 대규모 처리 가능 | AWS 계정 별도 필요, 설정 복잡 | 기각 |
+| FCM (선택) | Firebase 통합, 무료, Expo 지원 | Cloud Functions 필요 (Blaze 플랜) | 채택 |
+
+**트레이드오프**
+- FCM 사용을 위해 Firebase Blaze 플랜(종량제)으로 업그레이드 필요
+- Blaze 플랜도 무료 한도가 넉넉 (월 125K 알림, Cloud Functions 월 2M 호출)
+- MVP에서는 Spark 플랜 유지, v2에서 Blaze로 전환
+
+**위험 요소**
+- iOS에서 APNs 인증서/키 설정 필요 (Apple Developer 계정 필수)
+- 알림 권한 거부 시 대체 경험 설계 필요 (인앱 알림 목록)

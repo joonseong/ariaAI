@@ -69,7 +69,10 @@ aria/
 │   ├── useImagePicker.ts   # 이미지 선택 + 검증 + 리사이징
 │   ├── useNetworkStatus.ts # 네트워크 연결 상태 감지
 │   ├── useReport.ts        # 신고 처리
-│   └── useDebounce.ts      # 디바운싱 유틸 훅
+│   ├── useBookmark.ts      # 작품 저장 토글
+│   ├── useDebounce.ts      # 디바운싱 유틸 훅
+│   └── useDiscardGuard.ts  # 작성 중 이탈 방지 (뒤로가기 확인)
+│   # v2 추가 예정: useNotifications.ts (푸시 알림 등록 + 수신)
 ├── services/               # Firebase 연동 래퍼
 │   ├── auth.ts             # Firebase Auth 호출
 │   ├── artworks.ts         # Firestore artworks CRUD
@@ -78,8 +81,10 @@ aria/
 │   ├── follows.ts          # Firestore follows 토글
 │   ├── guestbooks.ts       # Firestore guestbooks CRUD
 │   ├── reports.ts          # Firestore reports 생성
+│   ├── bookmarks.ts          # Firestore bookmarks CRUD (저장 기능)
 │   ├── storage.ts          # Firebase Storage 업로드/삭제
 │   └── analytics.ts        # Firebase Analytics 이벤트 래퍼
+│   # v2 추가 예정: notifications.ts (FCM 토큰 관리 + 알림 전송)
 ├── stores/                 # Zustand 상태 저장소
 │   ├── authStore.ts        # 로그인 유저 정보
 │   └── feedStore.ts        # 피드 필터/정렬 상태
@@ -115,6 +120,33 @@ aria/
 > - Firebase와 통신하는 코드를 찾으려면 → `services/` 폴더
 > - 에러 메시지를 바꾸려면 → `lib/errors.ts`
 > - 입력 검증 규칙을 바꾸려면 → `lib/validators.ts`
+
+---
+
+### 상수 정의 (lib/constants.ts)
+
+```typescript
+// lib/constants.ts — DESIGN.md 토큰과 1:1 매핑
+export const COLORS = {
+  bg: { primary: '#0D0D0D', surface: '#1A1A1A', elevated: '#262626' },
+  text: { primary: '#F5F5F5', secondary: '#A3A3A3', tertiary: '#808080' },
+  accent: { primary: '#8B5CF6', primaryHover: '#7C3AED', heart: '#EF4444' },
+  semantic: { error: '#EF4444', success: '#22C55E', warning: '#F59E0B', border: '#2A2A2A' },
+} as const;
+
+export const LIMITS = {
+  NICKNAME_MIN: 2,
+  NICKNAME_MAX: 20,
+  BIO_MAX: 150,
+  TITLE_MAX: 100,
+  DESCRIPTION_MAX: 2000,
+  TAGS_MAX: 10,
+  IMAGES_MAX: 5,
+  IMAGE_SIZE_MB: 10,
+  FEED_PAGE_SIZE: 20,
+  GUESTBOOK_PAGE_SIZE: 20,
+} as const;
+```
 
 ---
 
@@ -221,6 +253,89 @@ function ArtworkDetail() {
 > **초보자 참고 — 왜 이렇게 나누나?**
 > 만약 나중에 Firebase를 Supabase로 바꾸더라도, `services/` 폴더만 수정하면 됩니다.
 > 화면 코드는 건드릴 필요가 없습니다. 이것이 "관심사 분리"의 핵심입니다.
+
+### 닉네임 유일성 보장 (Transaction 패턴)
+
+> **왜 Transaction이 필요한가?**
+> 두 사용자가 동시에 같은 닉네임을 저장하면 둘 다 성공할 수 있습니다.
+> Firestore Transaction을 사용하면 "확인 + 저장"이 원자적으로 처리되어 race condition을 방지합니다.
+
+```typescript
+// services/users.ts — 닉네임 변경
+export async function updateNickname(
+  userId: string,
+  oldNickname: string,
+  newNickname: string
+): Promise<Result<void>> {
+  const normalized = newNickname.toLowerCase().trim();
+  try {
+    await runTransaction(db, async (transaction) => {
+      // 1. 새 닉네임이 이미 사용 중인지 확인
+      const nicknameRef = doc(db, 'nicknames', normalized);
+      const nicknameDoc = await transaction.get(nicknameRef);
+      if (nicknameDoc.exists()) {
+        throw new Error('NICKNAME_TAKEN');
+      }
+      // 2. 이전 닉네임 문서 삭제
+      const oldRef = doc(db, 'nicknames', oldNickname.toLowerCase().trim());
+      transaction.delete(oldRef);
+      // 3. 새 닉네임 문서 생성 + 사용자 문서 업데이트
+      transaction.set(nicknameRef, { userId, createdAt: serverTimestamp() });
+      transaction.update(doc(db, 'users', userId), {
+        nickname: newNickname,
+        normalizedNickname: normalized,
+        updatedAt: serverTimestamp(),
+      });
+    });
+    return { success: true, data: undefined };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+```
+
+### 작품 등록 — Storage 롤백 패턴
+
+```typescript
+// services/artworks.ts — 이미지 업로드 후 Firestore 문서 생성 실패 시 롤백
+export async function createArtwork(
+  userId: string,
+  formData: ArtworkFormData
+): Promise<Result<string>> {
+  const uploadedUrls: string[] = [];
+  try {
+    // 1. 이미지 업로드
+    for (const image of formData.images) {
+      const url = await uploadImage(`artworks/${userId}`, image);
+      uploadedUrls.push(url);
+    }
+    // 2. Firestore 문서 생성
+    const artworkRef = await addDoc(collection(db, 'artworks'), {
+      authorId: userId,
+      authorNickname: formData.authorNickname,
+      authorProfileImageUrl: formData.authorProfileImageUrl,
+      title: formData.title,
+      description: formData.description,
+      imageUrls: uploadedUrls,
+      thumbnailUrl: uploadedUrls[0],
+      tags: formData.tags,
+      tool: formData.tool,
+      likesCount: 0,
+      reportCount: 0,
+      isHidden: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return { success: true, data: artworkRef.id };
+  } catch (error) {
+    // 3. 실패 시 업로드된 이미지 롤백 삭제
+    for (const url of uploadedUrls) {
+      await deleteImage(url).catch(() => {}); // 롤백 실패는 무시
+    }
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+```
 
 ---
 
@@ -609,6 +724,132 @@ aria://artist/{id}   → 작가 포트폴리오 화면
 3. 리팩토링 (Refactor)
 ```
 
+### 테스트 예제 — 이런 패턴으로 작성하세요
+
+> 아래 예제는 "이런 식으로 작성하면 된다"는 참고용입니다.
+> 모든 테스트를 미리 작성하는 것이 아니라, 기능을 구현할 때마다 해당 기능의 테스트를 먼저 작성합니다 (TDD).
+
+#### 예제 1: 순수 함수 테스트 (가장 기본)
+```typescript
+// __tests__/lib/validators.test.ts
+import { isValidNickname, isValidEmail } from '@/lib/validators';
+
+describe('isValidNickname', () => {
+  it('2~20자 닉네임을 허용한다', () => {
+    expect(isValidNickname('아리아')).toBe(true);
+    expect(isValidNickname('ab')).toBe(true);
+  });
+
+  it('1자 이하를 거부한다', () => {
+    expect(isValidNickname('')).toBe(false);
+    expect(isValidNickname('a')).toBe(false);
+  });
+
+  it('20자 초과를 거부한다', () => {
+    expect(isValidNickname('a'.repeat(21))).toBe(false);
+  });
+
+  it('특수문자를 거부한다', () => {
+    expect(isValidNickname('user@name')).toBe(false);
+    expect(isValidNickname('user name')).toBe(false);
+  });
+});
+
+describe('isValidEmail', () => {
+  it('올바른 이메일 형식을 허용한다', () => {
+    expect(isValidEmail('test@example.com')).toBe(true);
+  });
+
+  it('잘못된 형식을 거부한다', () => {
+    expect(isValidEmail('not-email')).toBe(false);
+    expect(isValidEmail('@no-local.com')).toBe(false);
+  });
+});
+```
+
+#### 예제 2: 훅 테스트 — Result<T> 패턴 검증
+```typescript
+// __tests__/hooks/useLike.test.ts
+import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { useLike } from '@/hooks/useLike';
+import * as likesService from '@/services/likes';
+
+// 서비스 레이어를 가짜(mock)로 대체
+jest.mock('@/services/likes');
+const mockToggleLike = likesService.toggleLike as jest.MockedFunction<typeof likesService.toggleLike>;
+
+describe('useLike', () => {
+  it('좋아요 성공 시 UI를 즉시 반영한다 (낙관적 업데이트)', async () => {
+    // 서비스가 성공을 반환하도록 설정
+    mockToggleLike.mockResolvedValue({ success: true, data: true });
+
+    const { result } = renderHook(() => useLike('artwork-1', false, 10));
+
+    // 좋아요 실행
+    act(() => { result.current.toggle(); });
+
+    // 즉시 UI가 변경되었는지 확인 (서버 응답 전)
+    expect(result.current.isLiked).toBe(true);
+    expect(result.current.count).toBe(11);
+  });
+
+  it('좋아요 실패 시 UI를 원래대로 롤백한다', async () => {
+    // 서비스가 실패를 반환하도록 설정
+    mockToggleLike.mockResolvedValue({
+      success: false,
+      error: { code: 'NETWORK_ERROR', message: '네트워크 오류' },
+    });
+
+    const { result } = renderHook(() => useLike('artwork-1', false, 10));
+
+    act(() => { result.current.toggle(); });
+
+    // 서버 응답 대기 후 롤백 확인
+    await waitFor(() => {
+      expect(result.current.isLiked).toBe(false);  // 원래 상태로 복원
+      expect(result.current.count).toBe(10);
+    });
+  });
+});
+```
+
+> **초보자 참고 — jest.mock이란?**
+> 테스트에서 실제 Firebase에 접속하면 느리고 불안정합니다.
+> `jest.mock`은 서비스 함수를 "가짜"로 교체해서, 성공/실패를 자유롭게 시뮬레이션합니다.
+> 훅 테스트에서는 mock을, 서비스 테스트에서는 Emulator를 사용합니다.
+
+#### 예제 3: 서비스 통합 테스트 (Firebase Emulator)
+```typescript
+// __tests__/services/artworks.integration.test.ts
+// ⚠️ 이 테스트는 Firebase Emulator가 실행 중이어야 합니다
+// 실행: firebase emulators:start 후 npx jest __tests__/services/
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore, connectFirestoreEmulator, collection, getDocs } from 'firebase/firestore';
+
+const testApp = initializeApp({ projectId: 'aria-test' });
+const testDb = getFirestore(testApp);
+connectFirestoreEmulator(testDb, 'localhost', 8080);
+
+describe('artworks service (Emulator)', () => {
+  it('작품 생성 후 피드에서 조회된다', async () => {
+    // 1. 테스트 데이터 생성 (Emulator에 직접 삽입)
+    // 2. fetchFeed() 호출
+    // 3. 생성한 작품이 결과에 포함되는지 확인
+
+    // 이 패턴으로 실제 Firestore 쿼리를 검증합니다.
+    // Security Rules도 함께 테스트됩니다.
+  });
+});
+```
+
+> **세 가지 테스트 패턴 정리**
+> | 대상 | 도구 | 속도 | 용도 |
+> |------|------|------|------|
+> | lib/ (순수 함수) | Jest만 | 매우 빠름 | 입력 검증, 포맷팅 로직 |
+> | hooks/ (비즈니스 로직) | Jest + Mock | 빠름 | 낙관적 업데이트, 상태 관리 |
+> | services/ (Firebase 연동) | Jest + Emulator | 느림 | 쿼리, Security Rules, 트랜잭션 |
+
 ---
 
 ## Firebase 설정 구조
@@ -658,6 +899,14 @@ export const db = initializeFirestore(app, {
 });
 
 export const storage = getStorage(app);
+
+// 개발 환경에서 Firebase Emulator 연결
+if (__DEV__) {
+  connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+  connectFirestoreEmulator(db, 'localhost', 8080);
+  connectStorageEmulator(storage, 'localhost', 9199);
+  console.log('🔧 Firebase Emulator에 연결됨');
+}
 ```
 
 > **초보자 참고 — 환경 변수란?**
@@ -737,6 +986,8 @@ service cloud.firestore {
     // === Guestbooks ===
     match /guestbooks/{ownerId}/messages/{messageId} {
       allow read: if true;
+      // 스팸 방지: 클라이언트에서 전송 버튼 3초 쿨다운 적용
+      // 서버사이드 강화는 v2 Cloud Functions에서 rate limiter 구현
       allow create: if isAuthenticated()
         && request.resource.data.authorId == request.auth.uid
         && isValidString(request.resource.data.content, 1, 200);
@@ -753,6 +1004,16 @@ service cloud.firestore {
       allow read: if false;  // 클라이언트에서 읽기 불가
       allow create: if isAuthenticated()
         && request.resource.data.reporterId == request.auth.uid;
+    }
+
+    // === Bookmarks (저장) ===
+    match /bookmarks/{bookmarkId} {
+      allow read: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated()
+        && resource.data.userId == request.auth.uid;
     }
 
     // === Nicknames (유니크 보장) ===
@@ -795,6 +1056,54 @@ service firebase.storage {
   }
 }
 ```
+
+---
+
+## 푸시 알림 아키텍처 (v2 사전 설계)
+
+> **왜 미리 설계하는가?**
+> 푸시 알림은 v2에서 구현하지만, 알림을 보내려면 사용자의 "디바이스 토큰"을 저장해야 합니다.
+> 이 토큰 저장 구조를 미리 설계해두면, v2에서 바로 구현에 들어갈 수 있습니다.
+
+### 사용 기술
+- **Firebase Cloud Messaging (FCM)**: Firebase에 포함된 무료 푸시 알림 서비스
+- **expo-notifications**: Expo에서 FCM을 쉽게 사용할 수 있게 해주는 라이브러리
+- 별도 API 키 불필요 (Firebase 프로젝트에 이미 포함)
+
+> **초보자 참고 — 푸시 알림이 작동하는 원리**
+> 1. 앱 설치 시 디바이스마다 고유한 "푸시 토큰"이 발급됩니다
+> 2. 이 토큰을 Firestore에 저장해둡니다
+> 3. 작가가 새 작품을 올리면 → Cloud Function이 팔로워 목록을 조회 → 각 팔로워의 토큰으로 알림 전송
+> 4. 사용자 기기에 "새로운 작품이 등록되었습니다" 알림 표시
+
+### Firestore 토큰 저장 구조 (MVP에서 미리 준비)
+```
+// users/{userId} 문서에 추가할 필드 (v2)
+// - pushTokens: string[]     ← 한 사용자가 여러 기기 사용 가능
+// - notificationSettings: {
+//     newArtwork: boolean,    ← 팔로우 작가 신작 알림
+//     like: boolean,          ← 내 작품 좋아요 알림
+//     follow: boolean,        ← 새 팔로워 알림
+//     guestbook: boolean,     ← 방명록 알림
+//   }
+```
+
+### v2 알림 종류 (구현 예정)
+| 이벤트 | 수신자 | 알림 내용 |
+|--------|--------|-----------|
+| 팔로우 작가 신작 | 팔로워 전원 | "{작가명}님이 새 작품을 등록했습니다" |
+| 내 작품 좋아요 | 작품 작가 | "{닉네임}님이 작품을 좋아합니다" (묶음 처리: 5명 이상이면 "{닉네임} 외 N명") |
+| 새 팔로워 | 작가 | "{닉네임}님이 팔로우했습니다" |
+| 방명록 새 메시지 | 포트폴리오 주인 | "{닉네임}님이 방명록에 글을 남겼습니다" |
+| 방명록 답글 | 메시지 작성자 | "{작가명}님이 답글을 달았습니다" |
+| 작품 자동 숨김 | 작품 작가 | "작품이 커뮤니티 가이드라인 검토 중입니다" |
+
+### v2 구현 시 필요한 작업
+1. `expo-notifications` 설치 + 권한 요청 로직
+2. Cloud Function: `onArtworkCreated` → 팔로워에게 알림 전송
+3. Cloud Function: `onLikeCreated` → 작가에게 알림 전송 (묶음 처리)
+4. 알림 설정 화면 (프로필 > 알림 설정)
+5. 인앱 알림 목록 화면 (알림 탭 또는 프로필 내)
 
 ---
 
@@ -857,11 +1166,37 @@ export const haptics = {
 ### 작성 중 데이터 보호 (Discard Guard)
 ```typescript
 // hooks/useDiscardGuard.ts
-// - 특정 상태(isDirty)가 true일 때 뒤로가기를 가로챔
-// - Expo Router의 useNavigation().addListener('beforeRemove')
-// - 확인 다이얼로그 표시: "작성 중인 내용이 있습니다. 나가시겠습니까?"
-// - "나가기" → navigation dispatch / "계속 작성" → preventDefault
-// - 적용 화면: 작품 등록, 프로필 수정
+import { useEffect } from 'react';
+import { Alert } from 'react-native';
+import { useNavigation } from 'expo-router';
+
+export function useDiscardGuard(isDirty: boolean) {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (!isDirty) return;
+
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+      Alert.alert(
+        '작성 중인 내용이 있습니다',
+        '나가시면 작성 중인 내용이 사라집니다.',
+        [
+          { text: '계속 작성', style: 'cancel' },
+          {
+            text: '나가기',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ]
+      );
+    });
+
+    return unsubscribe;
+  }, [isDirty, navigation]);
+}
+
+// 적용 화면: 작품 등록, 프로필 수정
 ```
 
 ### 스크롤 위치 복원
