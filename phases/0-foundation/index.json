@@ -2,13 +2,70 @@
   "project": "Aria",
   "phase": "0-foundation",
   "steps": [
-    { "step": 0, "name": "project-setup", "status": "pending" },
-    { "step": 1, "name": "core-types", "status": "pending" },
-    { "step": 2, "name": "lib-core", "status": "pending" },
-    { "step": 3, "name": "firebase-config", "status": "pending" },
-    { "step": 4, "name": "auth-service", "status": "pending" },
-    { "step": 5, "name": "auth-store-hook", "status": "pending" },
-    { "step": 6, "name": "ui-foundation", "status": "pending" },
-    { "step": 7, "name": "auth-screens", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "project-setup",
+      "status": "completed",
+      "started_at": "2026-04-24T00:49:01+0900",
+      "summary": "Expo SDK 54 프로젝트 초기화, NativeWind v4/TypeScript strict/Jest/Zustand/Firebase SDK 설정 완료, ARCHITECTURE.md 디렉토리 구조 생성"
+    },
+    {
+      "step": 1,
+      "name": "core-types",
+      "status": "completed",
+      "started_at": "2026-04-24T21:32:32+0900",
+      "summary": "types/ 폴더에 common(Result<T>, AsyncState<T>, PaginatedResult<T>), user, artwork, guestbook, report, notification, navigation 타입 정의 완료",
+      "completed_at": "2026-04-24T21:34:24+0900"
+    },
+    {
+      "step": 2,
+      "name": "lib-core",
+      "status": "completed",
+      "started_at": "2026-04-24T21:34:24+0900",
+      "summary": "lib/ 폴더에 constants, errors(mapFirebaseError), validators, formatters, haptics, image 유틸리티 모듈 + 80개 단위 테스트 작성 완료",
+      "completed_at": "2026-04-24T21:43:38+0900"
+    },
+    {
+      "step": 3,
+      "name": "firebase-config",
+      "status": "completed",
+      "started_at": "2026-04-24T21:43:38+0900",
+      "summary": "lib/firebase.ts — Firebase App/Auth/Firestore/Storage 초기화 + 환경 변수 기반 설정 + DEV 환경 Emulator 연결 구현, .env.example 주석 보강",
+      "completed_at": "2026-04-24T21:50:30+0900"
+    },
+    {
+      "step": 4,
+      "name": "auth-service",
+      "status": "completed",
+      "started_at": "2026-04-24T21:50:30+0900",
+      "summary": "services/auth.ts(signUp/signIn/signOut/passwordReset/getCurrentUser/deleteAccount) + services/users.ts(updateNickname/updateProfile/checkNicknameAvailable) — 모든 함수 Result<T> 반환, Transaction 기반 닉네임 유일성 보장, 24개 mock 테스트 통과",
+      "completed_at": "2026-04-24T21:58:33+0900"
+    },
+    {
+      "step": 5,
+      "name": "auth-store-hook",
+      "status": "completed",
+      "started_at": "2026-04-24T21:58:33+0900",
+      "summary": "stores/authStore.ts(Zustand 순수 상태 관리) + hooks/useAuth.ts(signUp/signIn/logout/resetPassword/deleteAccount/initializeAuth via onAuthStateChanged) + hooks/useDebounce.ts + services/auth.ts에 subscribeToAuthState 추가 — 14개 hook 테스트 통과, 전체 118개 테스트 통과",
+      "completed_at": "2026-04-24T22:08:21+0900"
+    },
+    {
+      "step": 6,
+      "name": "ui-foundation",
+      "status": "completed",
+      "started_at": "2026-04-24T22:08:21+0900",
+      "summary": "components/common/에 Toast(+toastStore), ErrorState, EmptyState, Skeleton, Button, Input 6개 공통 UI 컴포넌트 생성 — NativeWind 스타일링, DESIGN.md 토큰 준수, tsc --noEmit 통과",
+      "completed_at": "2026-04-24T22:11:26+0900"
+    },
+    {
+      "step": 7,
+      "name": "auth-screens",
+      "status": "completed",
+      "started_at": "2026-04-24T22:11:26+0900",
+      "summary": "app/_layout.tsx(루트 레이아웃 — 인증 분기+ToastContainer+StatusBar), app/(auth)/ 로그인·회원가입·비밀번호재설정 3화면, app/(tabs)/ 탭 레이아웃+홈·검색·등록·프로필 placeholder 4화면 — useAuth 훅 기반, NativeWind 스타일링, tsc+expo export 통과",
+      "completed_at": "2026-04-24T22:18:43+0900"
+    }
+  ],
+  "created_at": "2026-04-24T00:49:01+0900",
+  "completed_at": "2026-04-24T22:18:44+0900"
 }

@@ -1,0 +1,22 @@
+export type RootStackParamList = {
+  '(auth)/login': undefined;
+  '(auth)/signup': undefined;
+  '(auth)/forgot-password': undefined;
+  '(tabs)/index': undefined;
+  '(tabs)/search': undefined;
+  '(tabs)/upload': undefined;
+  '(tabs)/profile': undefined;
+  'artwork/[id]': { id: string };
+  'artwork/[id]/edit': { id: string };
+  'artist/[id]': { id: string };
+  'artist/[id]/guestbook': { id: string };
+  'artist/[id]/followers': { id: string };
+  'artist/[id]/following': { id: string };
+  'profile/edit': undefined;
+  'profile/liked': undefined;
+  'profile/saved': undefined;
+  'profile/stats': undefined;
+  'profile/notifications': undefined;
+  'profile/followers': undefined;
+  'profile/following': undefined;
+};
