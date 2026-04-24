@@ -28,7 +28,10 @@
     {
       "step": 3,
       "name": "firebase-config",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-24T21:43:38+0900",
+      "summary": "lib/firebase.ts — Firebase App/Auth/Firestore/Storage 초기화 + 환경 변수 기반 설정 + DEV 환경 Emulator 연결 구현, .env.example 주석 보강",
+      "completed_at": "2026-04-24T22:00:00+0900"
     },
     {
       "step": 4,
