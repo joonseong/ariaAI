@@ -47,7 +47,7 @@
       "status": "completed",
       "started_at": "2026-04-24T21:58:33+0900",
       "summary": "stores/authStore.ts(Zustand 순수 상태 관리) + hooks/useAuth.ts(signUp/signIn/logout/resetPassword/deleteAccount/initializeAuth via onAuthStateChanged) + hooks/useDebounce.ts + services/auth.ts에 subscribeToAuthState 추가 — 14개 hook 테스트 통과, 전체 118개 테스트 통과",
-      "completed_at": "2026-04-24T22:30:00+0900"
+      "completed_at": "2026-04-24T22:08:21+0900"
     },
     {
       "step": 6,
