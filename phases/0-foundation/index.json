@@ -63,7 +63,7 @@
       "status": "completed",
       "started_at": "2026-04-24T22:11:26+0900",
       "summary": "app/_layout.tsx(루트 레이아웃 — 인증 분기+ToastContainer+StatusBar), app/(auth)/ 로그인·회원가입·비밀번호재설정 3화면, app/(tabs)/ 탭 레이아웃+홈·검색·등록·프로필 placeholder 4화면 — useAuth 훅 기반, NativeWind 스타일링, tsc+expo export 통과",
-      "completed_at": "2026-04-24T22:30:00+0900"
+      "completed_at": "2026-04-24T22:18:43+0900"
     }
   ],
   "created_at": "2026-04-24T00:49:01+0900"
