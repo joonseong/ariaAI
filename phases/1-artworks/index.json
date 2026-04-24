@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "artwork-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-24T23:50:10+0900",
+      "summary": "stores/feedStore.ts(피드 상태 관리), hooks/useArtworks.ts(피드 로딩/페이지네이션/새로고침), hooks/useArtworkDetail.ts(작품 상세 조회), hooks/useLike.ts(낙관적 업데이트+롤백+피드 동기화), hooks/useImagePicker.ts(이미지 선택+검증), hooks/useDiscardGuard.ts(이탈 방지) 구현 및 테스트 12건 통과, 전체 169건 통과",
+      "completed_at": "2026-04-25T00:00:00+0900"
     },
     {
       "step": 2,
