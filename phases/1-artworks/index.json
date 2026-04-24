@@ -1,0 +1,12 @@
+{
+  "project": "Aria",
+  "phase": "1-artworks",
+  "steps": [
+    { "step": 0, "name": "artwork-services", "status": "pending" },
+    { "step": 1, "name": "artwork-hooks", "status": "pending" },
+    { "step": 2, "name": "artwork-components", "status": "pending" },
+    { "step": 3, "name": "home-feed", "status": "pending" },
+    { "step": 4, "name": "artwork-upload", "status": "pending" },
+    { "step": 5, "name": "artwork-detail", "status": "pending" }
+  ]
+}
