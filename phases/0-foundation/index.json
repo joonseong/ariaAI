@@ -14,7 +14,8 @@
       "name": "core-types",
       "status": "completed",
       "started_at": "2026-04-24T21:32:32+0900",
-      "summary": "types/ 폴더에 common(Result<T>, AsyncState<T>, PaginatedResult<T>), user, artwork, guestbook, report, notification, navigation 타입 정의 완료"
+      "summary": "types/ 폴더에 common(Result<T>, AsyncState<T>, PaginatedResult<T>), user, artwork, guestbook, report, notification, navigation 타입 정의 완료",
+      "completed_at": "2026-04-24T21:34:24+0900"
     },
     {
       "step": 2,
