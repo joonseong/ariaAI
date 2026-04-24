@@ -12,7 +12,9 @@
     {
       "step": 1,
       "name": "core-types",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-24T21:32:32+0900",
+      "summary": "types/ 폴더에 common(Result<T>, AsyncState<T>, PaginatedResult<T>), user, artwork, guestbook, report, notification, navigation 타입 정의 완료"
     },
     {
       "step": 2,
