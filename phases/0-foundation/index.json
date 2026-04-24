@@ -36,7 +36,10 @@
     {
       "step": 4,
       "name": "auth-service",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-24T21:50:30+0900",
+      "summary": "services/auth.ts(signUp/signIn/signOut/passwordReset/getCurrentUser/deleteAccount) + services/users.ts(updateNickname/updateProfile/checkNicknameAvailable) — 모든 함수 Result<T> 반환, Transaction 기반 닉네임 유일성 보장, 24개 mock 테스트 통과",
+      "completed_at": "2026-04-24T22:15:00+0900"
     },
     {
       "step": 5,
