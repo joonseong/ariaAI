@@ -4,6 +4,9 @@ import {
   signOut as firebaseSignOut,
   sendPasswordResetEmail,
   deleteUser,
+  onAuthStateChanged,
+  type User as FirebaseUser,
+  type Unsubscribe,
 } from 'firebase/auth';
 import {
   doc,
@@ -218,4 +221,12 @@ export async function deleteAccount(uid: string): Promise<Result<void>> {
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };
   }
+}
+
+export function subscribeToAuthState(
+  callback: (uid: string | null) => void,
+): Unsubscribe {
+  return onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+    callback(firebaseUser?.uid ?? null);
+  });
 }
