@@ -40,7 +40,7 @@
       "status": "completed",
       "started_at": "2026-04-25T21:19:12+0900",
       "summary": "hooks/useArtworkUpload.ts(폼 상태+검증+리사이징+업로드 프로그레스), app/(tabs)/upload/index.tsx(이미지 선택+제목/설명/도구/태그 입력+업로드 오버레이+비회원 로그인 유도+이탈 방지) 구현, tsc --noEmit 통과, expo export 통과",
-      "completed_at": "2026-04-25T21:30:00+0900"
+      "completed_at": "2026-04-25T21:22:41+0900"
     },
     {
       "step": 5,
