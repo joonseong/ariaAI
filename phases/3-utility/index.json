@@ -2,10 +2,47 @@
   "project": "Aria",
   "phase": "3-utility",
   "steps": [
-    { "step": 0, "name": "utility-services", "status": "pending" },
-    { "step": 1, "name": "utility-hooks", "status": "pending" },
-    { "step": 2, "name": "search-screen", "status": "pending" },
-    { "step": 3, "name": "profile-settings", "status": "pending" },
-    { "step": 4, "name": "report-edit-delete", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "utility-services",
+      "status": "completed",
+      "started_at": "2026-04-25T22:53:51+0900",
+      "summary": "search.ts (prefix/tag 검색, 인기태그), reports.ts (신고 생성/중복체크/자동숨김), users.ts 확장 (updateProfileImage, updateBio, deleteAccount) 구현 — tsc 통과, 테스트 32개 신규 + 전체 133개 통과",
+      "completed_at": "2026-04-25T22:59:45+0900"
+    },
+    {
+      "step": 1,
+      "name": "utility-hooks",
+      "status": "completed",
+      "started_at": "2026-04-25T22:59:45+0900",
+      "summary": "useSearch (debounce 500ms, AsyncStorage 최근검색어), useReport (중복신고 방지), useProfileEdit (닉네임/bio/사진), useAccountDelete (Firestore+Auth 삭제), useArtworkEdit (검증+수정), useArtworkDelete 구현 — tsc 통과, 테스트 26개 신규 + 전체 278개 통과",
+      "completed_at": "2026-04-25T23:08:52+0900"
+    },
+    {
+      "step": 2,
+      "name": "search-screen",
+      "status": "completed",
+      "started_at": "2026-04-25T23:08:52+0900",
+      "summary": "app/(tabs)/search/index.tsx 구현 — 검색바(debounce 500ms), 인기 태그 칩, 최근 검색어(개별/전체 삭제), 작품/작가 탭 전환, 2열 그리드(작품)/리스트(작가), 무한 스크롤, 0건 안내 — tsc 통과, expo export 빌드 통과",
+      "completed_at": "2026-04-25T23:12:58+0900"
+    },
+    {
+      "step": 3,
+      "name": "profile-settings",
+      "status": "completed",
+      "started_at": "2026-04-25T23:12:58+0900",
+      "summary": "app/(tabs)/profile/index.tsx 재구현 (비회원 로그인 유도, 프로필 헤더+통계+메뉴+내 작품 그리드), app/profile/edit.tsx 구현 (useProfileEdit/useAccountDelete/useDiscardGuard, 사진 변경+닉네임+bio 수정, 회원 탈퇴) — tsc 통과, expo export 빌드 통과",
+      "completed_at": "2026-04-25T23:18:01+0900"
+    },
+    {
+      "step": 4,
+      "name": "report-edit-delete",
+      "status": "completed",
+      "started_at": "2026-04-25T23:18:01+0900",
+      "summary": "ReportSheet 바텀시트 컴포넌트(신고 사유 선택, 기타 입력, 중복신고 체크), app/artwork/edit.tsx 구현(useArtworkEdit/useDiscardGuard, 제목·설명·태그 수정, 프리셋 도구 태그), artwork/[id].tsx에 더보기 메뉴 연동(본인: 수정→edit.tsx/삭제→확인다이얼로그, 타인: 신고→ReportSheet) — tsc 통과, expo export 빌드 통과",
+      "completed_at": "2026-04-25T23:21:24+0900"
+    }
+  ],
+  "created_at": "2026-04-25T22:53:51+0900",
+  "completed_at": "2026-04-25T23:21:24+0900"
 }

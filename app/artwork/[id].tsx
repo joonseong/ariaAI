@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useArtworkDetail } from '@/hooks/useArtworkDetail';
 import { useLike } from '@/hooks/useLike';
+import { useArtworkDelete } from '@/hooks/useArtworkDelete';
 import { useAuthStore } from '@/stores/authStore';
 import { showToast } from '@/stores/toastStore';
 import * as likesService from '@/services/likes';
@@ -14,6 +15,7 @@ import { TagChip } from '@/components/artwork/TagChip';
 import { ArtworkActionBar } from '@/components/artwork/ArtworkActionBar';
 import { ErrorState } from '@/components/common/ErrorState';
 import { LoginPromptSheet } from '@/components/common/LoginPromptSheet';
+import ReportSheet from '@/components/common/ReportSheet';
 
 export default function ArtworkDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,6 +27,8 @@ export default function ArtworkDetailScreen() {
   const [initialLiked, setInitialLiked] = useState(false);
   const [likeReady, setLikeReady] = useState(false);
   const [loginPromptVisible, setLoginPromptVisible] = useState(false);
+  const [reportSheetVisible, setReportSheetVisible] = useState(false);
+  const { isDeleting, deleteArtwork } = useArtworkDelete();
 
   useEffect(() => {
     if (!user || !artwork) { setLikeReady(true); return; }
@@ -58,21 +62,45 @@ export default function ArtworkDetailScreen() {
     router.push(`/artist/${artwork.authorId}`);
   }, [artwork, router]);
 
+  const handleDeleteConfirm = useCallback(() => {
+    if (!artwork) return;
+    Alert.alert(
+      '작품 삭제',
+      '이 작품을 삭제하시겠습니까? 삭제된 작품은 복구할 수 없습니다.',
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '삭제',
+          style: 'destructive',
+          onPress: async () => {
+            const result = await deleteArtwork(artwork.id);
+            if (!result.success) {
+              showToast(result.error.message, 'error');
+              return;
+            }
+            showToast('작품이 삭제되었습니다', 'success');
+            router.back();
+          },
+        },
+      ],
+    );
+  }, [artwork, deleteArtwork, router]);
+
   const handleMoreMenu = useCallback(() => {
     if (!artwork) return;
     const isOwner = user?.id === artwork.authorId;
     const buttons = isOwner
       ? [
-          { text: '수정', onPress: () => {} },
-          { text: '삭제', style: 'destructive' as const, onPress: () => {} },
+          { text: '수정', onPress: () => router.push(`/artwork/edit?id=${artwork.id}`) },
+          { text: '삭제', style: 'destructive' as const, onPress: handleDeleteConfirm },
           { text: '취소', style: 'cancel' as const },
         ]
       : [
-          { text: '신고', onPress: () => {} },
+          { text: '신고', onPress: () => setReportSheetVisible(true) },
           { text: '취소', style: 'cancel' as const },
         ];
     Alert.alert('', '', buttons);
-  }, [artwork, user]);
+  }, [artwork, user, router, handleDeleteConfirm]);
 
   const handleBack = useCallback(() => router.back(), [router]);
 
@@ -84,7 +112,7 @@ export default function ArtworkDetailScreen() {
     }
   }, [isLoading, error, artwork, id, router]);
 
-  if (isLoading || !likeReady) {
+  if (isLoading || !likeReady || isDeleting) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" color="#8B5CF6" />
@@ -171,6 +199,16 @@ export default function ArtworkDetailScreen() {
         onClose={() => setLoginPromptVisible(false)}
         message="좋아요를 누르려면 로그인이 필요합니다"
       />
+
+      {artwork && (
+        <ReportSheet
+          visible={reportSheetVisible}
+          targetType="artwork"
+          targetId={artwork.id}
+          onClose={() => setReportSheetVisible(false)}
+          onReported={() => setReportSheetVisible(false)}
+        />
+      )}
     </SafeAreaView>
   );
 }

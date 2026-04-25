@@ -223,6 +223,22 @@ export async function deleteAccount(uid: string): Promise<Result<void>> {
   }
 }
 
+export async function deleteCurrentUser(): Promise<Result<void>> {
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return {
+        success: false,
+        error: { code: 'auth/no-current-user', message: '로그인이 필요합니다.' },
+      };
+    }
+    await deleteUser(currentUser);
+    return { success: true, data: undefined };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+
 export function subscribeToAuthState(
   callback: (uid: string | null) => void,
 ): Unsubscribe {

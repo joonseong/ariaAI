@@ -2,13 +2,21 @@ import {
   doc,
   getDoc,
   updateDoc,
+  deleteDoc,
   runTransaction,
   serverTimestamp,
+  collection,
+  collectionGroup,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { mapFirebaseError } from '@/lib/errors';
+import { LIMITS } from '@/lib/constants';
 import { Result } from '@/types/common';
 import { User, UserProfileUpdate } from '@/types/user';
+import { uploadImage, deleteImage } from '@/services/storage';
 
 interface FirestoreTimestamp {
   toDate: () => Date;
@@ -143,6 +151,150 @@ export async function getUserProfile(
     }
 
     return { success: true, data: toUser(userId, data) };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+
+// 프로필 사진 업로드 + 사용자 문서 업데이트
+export async function updateProfileImage(
+  userId: string,
+  imageUri: string,
+): Promise<Result<string>> {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    const oldImageUrl: string | null = userSnap.exists()
+      ? (userSnap.data().profileImageUrl as string | null) ?? null
+      : null;
+
+    const path = `profiles/${userId}/profile_${Date.now()}.jpg`;
+    const uploadResult = await uploadImage(path, imageUri);
+    if (!uploadResult.success) {
+      return uploadResult as Result<string>;
+    }
+
+    const newUrl = uploadResult.data;
+    await updateDoc(userRef, {
+      profileImageUrl: newUrl,
+      updatedAt: serverTimestamp(),
+    });
+
+    if (oldImageUrl) {
+      await deleteImage(oldImageUrl).catch(() => {});
+    }
+
+    return { success: true, data: newUrl };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+
+// 한 줄 소개 수정
+export async function updateBio(
+  userId: string,
+  bio: string,
+): Promise<Result<void>> {
+  if (bio.length > LIMITS.BIO_MAX) {
+    return {
+      success: false,
+      error: {
+        code: 'validation/bio-too-long',
+        message: `소개는 ${LIMITS.BIO_MAX}자 이하로 입력해주세요.`,
+      },
+    };
+  }
+
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, { bio, updatedAt: serverTimestamp() });
+    return { success: true, data: undefined };
+  } catch (error) {
+    return { success: false, error: mapFirebaseError(error) };
+  }
+}
+
+// 회원 탈퇴 — 모든 사용자 데이터 삭제 (Firebase Auth 계정 삭제는 훅에서 처리)
+export async function deleteAccount(userId: string): Promise<Result<void>> {
+  try {
+    // 1. 작품 전체 삭제 + 이미지 URL 수집
+    const artworkSnap = await getDocs(
+      query(collection(db, 'artworks'), where('authorId', '==', userId)),
+    );
+    const imageUrls: string[] = [];
+    for (const artworkDoc of artworkSnap.docs) {
+      const urls = artworkDoc.data().imageUrls as string[];
+      if (Array.isArray(urls)) {
+        imageUrls.push(...urls);
+      }
+      await deleteDoc(artworkDoc.ref);
+    }
+
+    // 2. 좋아요 전체 삭제
+    const likeSnap = await getDocs(
+      query(collection(db, 'likes'), where('userId', '==', userId)),
+    );
+    for (const likeDoc of likeSnap.docs) {
+      await deleteDoc(likeDoc.ref);
+    }
+
+    // 3. 팔로우 관계 전체 삭제 (팔로잉 + 팔로워)
+    const followingSnap = await getDocs(
+      query(collection(db, 'follows'), where('followerId', '==', userId)),
+    );
+    for (const followDoc of followingSnap.docs) {
+      await deleteDoc(followDoc.ref);
+    }
+
+    const followerSnap = await getDocs(
+      query(collection(db, 'follows'), where('followingId', '==', userId)),
+    );
+    for (const followDoc of followerSnap.docs) {
+      await deleteDoc(followDoc.ref);
+    }
+
+    // 4. 북마크 전체 삭제
+    const bookmarkSnap = await getDocs(
+      query(collection(db, 'bookmarks'), where('userId', '==', userId)),
+    );
+    for (const bookmarkDoc of bookmarkSnap.docs) {
+      await deleteDoc(bookmarkDoc.ref);
+    }
+
+    // 5. 이 사용자가 작성한 방명록 메시지 삭제 (collectionGroup)
+    const guestbookSnap = await getDocs(
+      query(collectionGroup(db, 'messages'), where('authorId', '==', userId)),
+    );
+    for (const msgDoc of guestbookSnap.docs) {
+      await deleteDoc(msgDoc.ref);
+    }
+
+    // 6. 이 사용자의 포트폴리오 방명록 메시지 삭제
+    const ownGuestbookSnap = await getDocs(
+      collection(db, 'guestbooks', userId, 'messages'),
+    );
+    for (const msgDoc of ownGuestbookSnap.docs) {
+      await deleteDoc(msgDoc.ref);
+    }
+
+    // 7. Storage 이미지 삭제 (작품 이미지)
+    for (const url of imageUrls) {
+      await deleteImage(url).catch(() => {});
+    }
+
+    // 8. 프로필 이미지 삭제
+    const userSnap = await getDoc(doc(db, 'users', userId));
+    if (userSnap.exists()) {
+      const profileImageUrl = userSnap.data().profileImageUrl as string | null;
+      if (profileImageUrl) {
+        await deleteImage(profileImageUrl).catch(() => {});
+      }
+    }
+
+    // 9. 사용자 문서 삭제
+    await deleteDoc(doc(db, 'users', userId));
+
+    return { success: true, data: undefined };
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };
   }
