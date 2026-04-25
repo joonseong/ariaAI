@@ -1,0 +1,10 @@
+{
+  "project": "Aria",
+  "phase": "4-polish",
+  "steps": [
+    { "step": 0, "name": "network-haptics", "status": "pending" },
+    { "step": 1, "name": "onboarding", "status": "pending" },
+    { "step": 2, "name": "empty-error-states", "status": "pending" },
+    { "step": 3, "name": "integration-fix", "status": "pending" }
+  ]
+}
