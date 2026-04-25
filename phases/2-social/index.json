@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "social-components",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T22:31:44+0900",
+      "completed_at": "2026-04-25T22:45:00+0900",
+      "summary": "FollowButton/UserListItem/ArtworkGrid/BookmarkButton/GuestbookMessage/GuestbookInput 컴포넌트 구현 (낙관적 업데이트, 비회원 로그인 유도, 타입 에러 없음)"
     },
     {
       "step": 3,
