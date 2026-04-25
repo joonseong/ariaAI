@@ -26,6 +26,7 @@ export default function RootLayout() {
         ) : (
           <Stack.Screen name="(auth)" />
         )}
+        <Stack.Screen name="artwork" />
       </Stack>
       <ToastContainer />
       <StatusBar style="light" />
