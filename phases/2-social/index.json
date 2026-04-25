@@ -39,7 +39,7 @@
       "name": "follow-lists",
       "status": "completed",
       "started_at": "2026-04-25T22:43:32+0900",
-      "completed_at": "2026-04-25T23:10:00+0900",
+      "completed_at": "2026-04-25T22:46:19+0900",
       "summary": "useFollowList 훅 + artist/[id]/followers|following + profile/followers|following 4개 화면 구현 (커서 기반 페이지네이션, 빈 상태/에러 상태, tsc 타입 에러 없음, expo export 빌드 성공)"
     },
     {
