@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-04-25T23:12:58+0900",
       "summary": "app/(tabs)/profile/index.tsx 재구현 (비회원 로그인 유도, 프로필 헤더+통계+메뉴+내 작품 그리드), app/profile/edit.tsx 구현 (useProfileEdit/useAccountDelete/useDiscardGuard, 사진 변경+닉네임+bio 수정, 회원 탈퇴) — tsc 통과, expo export 빌드 통과",
-      "completed_at": "2026-04-25T23:20:00+0900"
+      "completed_at": "2026-04-25T23:18:01+0900"
     },
     {
       "step": 4,
