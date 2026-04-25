@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-04-26T00:02:17+0900",
       "summary": "SearchScreen 사용자 탭 시 artist 페이지 이동 수정, FeedList forwardRef 추가 + useScrollToTop 홈/검색 탭 적용, 업로드 탭 비회원 즉시 LoginPromptSheet 표시, _layout.tsx에 artist/profile 라우트 추가",
-      "completed_at": "2026-04-26T01:00:00+0900"
+      "completed_at": "2026-04-26T00:08:17+0900"
     }
   ],
   "created_at": "2026-04-25T23:49:07+0900"
