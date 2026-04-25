@@ -13,9 +13,17 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" />
-        <Stack.Screen name="artwork" />
-        <Stack.Screen name="artist" />
-        <Stack.Screen name="profile" />
+        <Stack.Screen name="artwork/[id]" />
+        <Stack.Screen name="artwork/edit" />
+        <Stack.Screen name="artist/[id]" />
+        <Stack.Screen name="artist/[id]/followers" />
+        <Stack.Screen name="artist/[id]/following" />
+        <Stack.Screen name="artist/[id]/guestbook" />
+        <Stack.Screen name="profile/edit" />
+        <Stack.Screen name="profile/followers" />
+        <Stack.Screen name="profile/following" />
+        <Stack.Screen name="profile/liked" />
+        <Stack.Screen name="profile/saved" />
       </Stack>
       <ToastContainer />
       <OfflineBanner />

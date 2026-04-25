@@ -1,14 +1,20 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { useFeedStore } from '@/stores/feedStore';
 import * as artworksService from '@/services/artworks';
 
 export function useArtworks() {
-  const store = useFeedStore();
+  const artworks = useFeedStore((s) => s.artworks);
+  const isLoading = useFeedStore((s) => s.isLoading);
+  const isLoadingMore = useFeedStore((s) => s.isLoadingMore);
+  const isRefreshing = useFeedStore((s) => s.isRefreshing);
+  const hasMore = useFeedStore((s) => s.hasMore);
+  const error = useFeedStore((s) => s.error);
   const loadingRef = useRef(false);
 
   const loadFeed = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
+    const store = useFeedStore.getState();
     store.setLoading(true);
     store.setError(null);
 
@@ -16,19 +22,21 @@ export function useArtworks() {
       const result = await artworksService.getFeedArtworks();
 
       if (result.success) {
-        store.setArtworks(result.data.items);
-        store.setCursor(result.data.lastCursor as Date | null);
-        store.setHasMore(result.data.hasMore);
+        const s = useFeedStore.getState();
+        s.setArtworks(result.data.items);
+        s.setCursor(result.data.lastCursor as Date | null);
+        s.setHasMore(result.data.hasMore);
       } else {
-        store.setError(result.error.message);
+        useFeedStore.getState().setError(result.error.message);
       }
     } finally {
-      store.setLoading(false);
+      useFeedStore.getState().setLoading(false);
       loadingRef.current = false;
     }
-  }, [store]);
+  }, []);
 
   const loadMore = useCallback(async () => {
+    const store = useFeedStore.getState();
     if (loadingRef.current || store.isLoadingMore || !store.hasMore) return;
     loadingRef.current = true;
     store.setLoadingMore(true);
@@ -39,23 +47,24 @@ export function useArtworks() {
       );
 
       if (result.success) {
-        store.appendArtworks(
+        useFeedStore.getState().appendArtworks(
           result.data.items,
           result.data.lastCursor as Date | null,
           result.data.hasMore,
         );
       } else {
-        store.setError(result.error.message);
+        useFeedStore.getState().setError(result.error.message);
       }
     } finally {
-      store.setLoadingMore(false);
+      useFeedStore.getState().setLoadingMore(false);
       loadingRef.current = false;
     }
-  }, [store]);
+  }, []);
 
   const refresh = useCallback(async () => {
     if (loadingRef.current) return;
     loadingRef.current = true;
+    const store = useFeedStore.getState();
     store.setRefreshing(true);
     store.setError(null);
 
@@ -63,25 +72,26 @@ export function useArtworks() {
       const result = await artworksService.getFeedArtworks();
 
       if (result.success) {
-        store.setArtworks(result.data.items);
-        store.setCursor(result.data.lastCursor as Date | null);
-        store.setHasMore(result.data.hasMore);
+        const s = useFeedStore.getState();
+        s.setArtworks(result.data.items);
+        s.setCursor(result.data.lastCursor as Date | null);
+        s.setHasMore(result.data.hasMore);
       } else {
-        store.setError(result.error.message);
+        useFeedStore.getState().setError(result.error.message);
       }
     } finally {
-      store.setRefreshing(false);
+      useFeedStore.getState().setRefreshing(false);
       loadingRef.current = false;
     }
-  }, [store]);
+  }, []);
 
   return {
-    artworks: store.artworks,
-    isLoading: store.isLoading,
-    isLoadingMore: store.isLoadingMore,
-    isRefreshing: store.isRefreshing,
-    hasMore: store.hasMore,
-    error: store.error,
+    artworks,
+    isLoading,
+    isLoadingMore,
+    isRefreshing,
+    hasMore,
+    error,
     loadFeed,
     loadMore,
     refresh,

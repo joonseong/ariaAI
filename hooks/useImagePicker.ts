@@ -1,16 +1,12 @@
 import { useState, useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { LIMITS } from '@/lib/constants';
-import { validateImageSize } from '@/lib/image';
 
 export interface SelectedImage {
   uri: string;
   width: number;
   height: number;
 }
-
-const MIN_DIMENSION = 300;
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export function useImagePicker(maxImages: number = LIMITS.IMAGES_MAX) {
   const [images, setImages] = useState<SelectedImage[]>([]);
@@ -35,21 +31,8 @@ export function useImagePicker(maxImages: number = LIMITS.IMAGES_MAX) {
 
     const validImages: SelectedImage[] = [];
     for (const asset of result.assets) {
-      if (asset.type && !ALLOWED_TYPES.includes(asset.type)) {
-        continue;
-      }
-
-      if ((asset.width ?? 0) < MIN_DIMENSION || (asset.height ?? 0) < MIN_DIMENSION) {
-        continue;
-      }
-
       const isDuplicate = images.some((img) => img.uri === asset.uri);
       if (isDuplicate) {
-        continue;
-      }
-
-      const sizeValid = await validateImageSize(asset.uri);
-      if (!sizeValid) {
         continue;
       }
 

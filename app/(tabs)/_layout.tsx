@@ -20,28 +20,28 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="home/index"
         options={{
           title: '홈',
           tabBarIcon: ({ color }) => <TabIcon label="⌂" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="search"
+        name="search/index"
         options={{
           title: '검색',
           tabBarIcon: ({ color }) => <TabIcon label="⌕" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="upload"
+        name="upload/index"
         options={{
           title: '등록',
           tabBarIcon: ({ color }) => <TabIcon label="＋" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
           title: '프로필',
           tabBarIcon: ({ color }) => <TabIcon label="⊙" color={color} />,
