@@ -9,6 +9,10 @@
       "dir": "1-artworks",
       "status": "completed",
       "completed_at": "2026-04-25T21:28:54+0900"
+    },
+    {
+      "dir": "2-social",
+      "status": "pending"
     }
   ]
 }

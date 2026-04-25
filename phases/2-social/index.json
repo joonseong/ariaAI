@@ -1,0 +1,12 @@
+{
+  "project": "Aria",
+  "phase": "2-social",
+  "steps": [
+    { "step": 0, "name": "social-services", "status": "pending" },
+    { "step": 1, "name": "social-hooks", "status": "pending" },
+    { "step": 2, "name": "social-components", "status": "pending" },
+    { "step": 3, "name": "artist-portfolio", "status": "pending" },
+    { "step": 4, "name": "follow-lists", "status": "pending" },
+    { "step": 5, "name": "liked-saved", "status": "pending" }
+  ]
+}
