@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "social-hooks",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T22:27:53+0900",
+      "completed_at": "2026-04-25T22:50:00+0900",
+      "summary": "useFollow/useBookmark/useGuestbook/useArtistProfile 훅 구현 (낙관적 업데이트+롤백, 스팸 방지, 13 테스트 추가, 220 전체 통과)"
     },
     {
       "step": 2,
