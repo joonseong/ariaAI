@@ -32,7 +32,7 @@
       "status": "completed",
       "started_at": "2026-04-25T21:16:40+0900",
       "summary": "app/(tabs)/home/index.tsx 홈 피드 화면 구현 — useArtworks 훅으로 피드 로딩/페이지네이션/새로고침, FeedList 무한 스크롤, 비회원 좋아요 시 LoginPromptSheet 표시, 에러/빈 상태 처리, tsc --noEmit 통과",
-      "completed_at": "2026-04-25T21:20:00+0900"
+      "completed_at": "2026-04-25T21:19:12+0900"
     },
     {
       "step": 4,
