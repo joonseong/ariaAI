@@ -74,12 +74,14 @@ export default function SignupScreen() {
     setLoading(true);
     const result = await signUp({ email: email.trim(), password, nickname: nickname.trim() });
     setLoading(false);
-    if (!result.success) {
+    if (result.success) {
+      router.replace('/onboarding');
+    } else {
       if (result.error.code === 'auth/email-already-in-use') setEmailError('이미 가입된 이메일입니다.');
       else if (result.error.code === 'auth/network-request-failed') showToast('인터넷 연결을 확인해주세요.', 'error');
       else showToast(result.error.message, 'error');
     }
-  }, [email, password, nickname, signUp, validate]);
+  }, [email, password, nickname, signUp, validate, router]);
 
   return (
     <SafeAreaView className="flex-1 bg-background">

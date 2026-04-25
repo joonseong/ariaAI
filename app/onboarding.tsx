@@ -13,7 +13,7 @@ import FollowButton from '@/components/artist/FollowButton';
 import { TOOL_PRESETS } from '@/hooks/useArtworkUpload';
 import { Button } from '@/components/common/Button';
 
-const TOTAL_STEPS = 3;
+const TOTAL_STEPS = 2;
 
 const RECOMMENDED_ARTISTS = [
   { id: 'artist-1', nickname: '달빛작가', bio: 'Midjourney로 몽환적인 세계를 그립니다', profileImageUrl: null },
@@ -155,7 +155,6 @@ export default function OnboardingScreen(): React.JSX.Element {
       {step === 1 && (
         <ToolStep selectedTools={selectedTools} onToggle={handleToolToggle} />
       )}
-      {step === 2 && <ArtistStep />}
 
       <View className="gap-3 px-6 pb-6 pt-4">
         <Button

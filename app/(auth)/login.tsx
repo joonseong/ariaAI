@@ -55,7 +55,10 @@ export default function LoginScreen() {
     const result = await signIn(email.trim(), password);
     setLoading(false);
 
-    if (!result.success) {
+    if (result.success) {
+      router.replace('/(tabs)/home');
+      return;
+    } else if (!result.success) {
       const code = result.error.code;
       if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
         setPasswordError('이메일 또는 비밀번호가 올바르지 않습니다.');
@@ -127,28 +130,6 @@ export default function LoginScreen() {
             title="로그인"
             onPress={handleLogin}
             loading={loading}
-            fullWidth
-          />
-
-          <View className="my-6 flex-row items-center">
-            <View className="flex-1 border-b border-border" />
-            <Text className="mx-4 text-xs text-text-tertiary">또는</Text>
-            <View className="flex-1 border-b border-border" />
-          </View>
-
-          <View className="mb-3">
-            <Button
-              title="Google로 계속하기"
-              onPress={() => {}}
-              variant="secondary"
-              fullWidth
-            />
-          </View>
-
-          <Button
-            title="Apple로 계속하기"
-            onPress={() => {}}
-            variant="secondary"
             fullWidth
           />
 

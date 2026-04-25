@@ -46,10 +46,12 @@ export const db = initializeFirestore(app, {
 
 export const storage = getStorage(app);
 
-if (__DEV__) {
-  connectAuthEmulator(auth, 'http://localhost:9099', {
-    disableWarnings: true,
-  });
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectStorageEmulator(storage, 'localhost', 9199);
-}
+// Firebase Emulator 연결은 로컬 에뮬레이터를 실행 중일 때만 사용
+// 실제 Firebase 프로젝트에 연결하려면 이 블록을 비활성화
+// if (__DEV__) {
+//   connectAuthEmulator(auth, 'http://localhost:9099', {
+//     disableWarnings: true,
+//   });
+//   connectFirestoreEmulator(db, 'localhost', 8080);
+//   connectStorageEmulator(storage, 'localhost', 9199);
+// }

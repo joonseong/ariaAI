@@ -192,7 +192,6 @@ export async function getFeedArtworks(
     const artworksRef = collection(db, 'artworks');
 
     const constraints: QueryConstraint[] = [
-      where('isHidden', '==', false),
       orderBy('createdAt', 'desc'),
     ];
 
@@ -205,9 +204,9 @@ export async function getFeedArtworks(
     const q = query(artworksRef, ...constraints);
     const snapshot = await getDocs(q);
 
-    const items = snapshot.docs.map((docSnap) =>
-      toArtwork(docSnap.id, docSnap.data()),
-    );
+    const items = snapshot.docs
+      .map((docSnap) => toArtwork(docSnap.id, docSnap.data()))
+      .filter((a) => !a.isHidden);
 
     const lastItem = items[items.length - 1] ?? null;
 

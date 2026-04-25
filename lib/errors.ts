@@ -2,7 +2,9 @@ import { AppError } from '@/types/common';
 
 const ERROR_MESSAGES: Record<string, string> = {
   // Auth
+  'auth/nickname-taken': '이미 사용 중인 닉네임입니다.',
   'auth/email-already-in-use': '이미 가입된 이메일입니다.',
+  'auth/invalid-credential': '이메일 또는 비밀번호가 올바르지 않습니다.',
   'auth/invalid-email': '올바른 이메일 주소를 입력해주세요.',
   'auth/user-not-found': '이메일 또는 비밀번호가 올바르지 않습니다.',
   'auth/wrong-password': '이메일 또는 비밀번호가 올바르지 않습니다.',
@@ -29,6 +31,10 @@ const ERROR_MESSAGES: Record<string, string> = {
 const DEFAULT_MESSAGE = '알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
 
 export function mapFirebaseError(error: unknown): AppError {
+  if (__DEV__) {
+    console.error('[mapFirebaseError]', error);
+  }
+
   if (
     error != null &&
     typeof error === 'object' &&
@@ -41,5 +47,10 @@ export function mapFirebaseError(error: unknown): AppError {
       message: ERROR_MESSAGES[code] ?? DEFAULT_MESSAGE,
     };
   }
+
+  if (error instanceof Error) {
+    return { code: 'unknown', message: error.message || DEFAULT_MESSAGE };
+  }
+
   return { code: 'unknown', message: DEFAULT_MESSAGE };
 }
