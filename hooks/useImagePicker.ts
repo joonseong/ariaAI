@@ -19,6 +19,11 @@ export function useImagePicker(maxImages: number = LIMITS.IMAGES_MAX) {
     const remaining = maxImages - images.length;
     if (remaining <= 0) return;
 
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsMultipleSelection: true,

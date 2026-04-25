@@ -26,7 +26,7 @@ export const useFeedStore = create<FeedState>((set) => ({
   artworks: [],
   cursor: null,
   hasMore: true,
-  isLoading: false,
+  isLoading: true,
   isLoadingMore: false,
   isRefreshing: false,
   error: null,

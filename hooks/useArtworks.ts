@@ -12,18 +12,20 @@ export function useArtworks() {
     store.setLoading(true);
     store.setError(null);
 
-    const result = await artworksService.getFeedArtworks();
+    try {
+      const result = await artworksService.getFeedArtworks();
 
-    if (result.success) {
-      store.setArtworks(result.data.items);
-      store.setCursor(result.data.lastCursor as Date | null);
-      store.setHasMore(result.data.hasMore);
-    } else {
-      store.setError(result.error.message);
+      if (result.success) {
+        store.setArtworks(result.data.items);
+        store.setCursor(result.data.lastCursor as Date | null);
+        store.setHasMore(result.data.hasMore);
+      } else {
+        store.setError(result.error.message);
+      }
+    } finally {
+      store.setLoading(false);
+      loadingRef.current = false;
     }
-
-    store.setLoading(false);
-    loadingRef.current = false;
   }, [store]);
 
   const loadMore = useCallback(async () => {
@@ -31,22 +33,24 @@ export function useArtworks() {
     loadingRef.current = true;
     store.setLoadingMore(true);
 
-    const result = await artworksService.getFeedArtworks(
-      store.cursor ?? undefined,
-    );
-
-    if (result.success) {
-      store.appendArtworks(
-        result.data.items,
-        result.data.lastCursor as Date | null,
-        result.data.hasMore,
+    try {
+      const result = await artworksService.getFeedArtworks(
+        store.cursor ?? undefined,
       );
-    } else {
-      store.setError(result.error.message);
-    }
 
-    store.setLoadingMore(false);
-    loadingRef.current = false;
+      if (result.success) {
+        store.appendArtworks(
+          result.data.items,
+          result.data.lastCursor as Date | null,
+          result.data.hasMore,
+        );
+      } else {
+        store.setError(result.error.message);
+      }
+    } finally {
+      store.setLoadingMore(false);
+      loadingRef.current = false;
+    }
   }, [store]);
 
   const refresh = useCallback(async () => {
@@ -55,18 +59,20 @@ export function useArtworks() {
     store.setRefreshing(true);
     store.setError(null);
 
-    const result = await artworksService.getFeedArtworks();
+    try {
+      const result = await artworksService.getFeedArtworks();
 
-    if (result.success) {
-      store.setArtworks(result.data.items);
-      store.setCursor(result.data.lastCursor as Date | null);
-      store.setHasMore(result.data.hasMore);
-    } else {
-      store.setError(result.error.message);
+      if (result.success) {
+        store.setArtworks(result.data.items);
+        store.setCursor(result.data.lastCursor as Date | null);
+        store.setHasMore(result.data.hasMore);
+      } else {
+        store.setError(result.error.message);
+      }
+    } finally {
+      store.setRefreshing(false);
+      loadingRef.current = false;
     }
-
-    store.setRefreshing(false);
-    loadingRef.current = false;
   }, [store]);
 
   return {
