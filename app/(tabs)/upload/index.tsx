@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -25,6 +25,12 @@ export default function UploadScreen() {
 
   const isDirty = upload.isDirty || images.length > 0;
   useDiscardGuard(isDirty && !upload.isUploading);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setLoginPromptVisible(true);
+    }
+  }, [isAuthenticated]);
 
   const handlePickImages = useCallback(async () => {
     if (!isAuthenticated) {

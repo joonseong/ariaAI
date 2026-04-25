@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, forwardRef } from 'react';
 import { FlatList, View, ActivityIndicator, RefreshControl } from 'react-native';
 import { Artwork } from '@/types/artwork';
 import { ArtworkCard } from '@/components/artwork/ArtworkCard';
@@ -28,7 +28,7 @@ interface FeedListProps {
 
 const CARD_ESTIMATED_HEIGHT = 350;
 
-export function FeedList({
+export const FeedList = forwardRef<FlatList<Artwork>, FeedListProps>(function FeedList({
   artworks,
   isLoading,
   isLoadingMore,
@@ -46,7 +46,7 @@ export function FeedList({
   isAuthenticated,
   onEmptyAction,
   emptyActionLabel,
-}: FeedListProps) {
+}: FeedListProps, ref) {
   const handleEndReached = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       onLoadMore();
@@ -92,6 +92,7 @@ export function FeedList({
 
   return (
     <FlatList
+      ref={ref}
       data={artworks}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
@@ -123,4 +124,4 @@ export function FeedList({
       contentContainerStyle={{ paddingTop: 16 }}
     />
   );
-}
+});

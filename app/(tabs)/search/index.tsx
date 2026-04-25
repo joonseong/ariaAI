@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useScrollToTop } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import { useSearch } from '@/hooks/useSearch';
 import { TagChip } from '@/components/artwork/TagChip';
@@ -58,6 +59,13 @@ export default function SearchScreen() {
     clearRecentSearches,
   } = useSearch();
 
+  const scrollViewRef = useRef<ScrollView>(null);
+  const artworkListRef = useRef<FlatList<Artwork>>(null);
+  const userListRef = useRef<FlatList<User>>(null);
+  useScrollToTop(scrollViewRef);
+  useScrollToTop(artworkListRef);
+  useScrollToTop(userListRef);
+
   useEffect(() => {
     loadPopularTags();
     loadRecentSearches();
@@ -91,10 +99,6 @@ export default function SearchScreen() {
     [router],
   );
 
-  const handleUserPress = useCallback((_user: User) => {
-    Keyboard.dismiss();
-  }, []);
-
   const renderArtworkItem = useCallback(
     ({ item }: { item: Artwork }) => (
       <Pressable
@@ -116,11 +120,9 @@ export default function SearchScreen() {
 
   const renderUserItem = useCallback(
     ({ item }: { item: User }) => (
-      <Pressable onPress={() => handleUserPress(item)}>
-        <UserListItem user={item} showFollowButton />
-      </Pressable>
+      <UserListItem user={item} showFollowButton />
     ),
-    [handleUserPress],
+    [],
   );
 
   const loadingFooter = isLoadingMore ? (
@@ -206,6 +208,7 @@ export default function SearchScreen() {
             </View>
           ) : tab === 'artworks' ? (
             <FlatList<Artwork>
+              ref={artworkListRef}
               data={artworks}
               renderItem={renderArtworkItem}
               keyExtractor={(item) => item.id}
@@ -218,6 +221,7 @@ export default function SearchScreen() {
             />
           ) : (
             <FlatList<User>
+              ref={userListRef}
               data={users}
               renderItem={renderUserItem}
               keyExtractor={(item) => item.id}
@@ -229,7 +233,7 @@ export default function SearchScreen() {
           )}
         </View>
       ) : (
-        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+        <ScrollView ref={scrollViewRef} className="flex-1" keyboardShouldPersistTaps="handled">
           {/* 최근 검색어 */}
           {recentSearches.length > 0 && (
             <View className="px-4 py-3">
