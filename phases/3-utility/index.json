@@ -7,7 +7,8 @@
       "name": "utility-services",
       "status": "completed",
       "started_at": "2026-04-25T22:53:51+0900",
-      "summary": "search.ts (prefix/tag 검색, 인기태그), reports.ts (신고 생성/중복체크/자동숨김), users.ts 확장 (updateProfileImage, updateBio, deleteAccount) 구현 — tsc 통과, 테스트 32개 신규 + 전체 133개 통과"
+      "summary": "search.ts (prefix/tag 검색, 인기태그), reports.ts (신고 생성/중복체크/자동숨김), users.ts 확장 (updateProfileImage, updateBio, deleteAccount) 구현 — tsc 통과, 테스트 32개 신규 + 전체 133개 통과",
+      "completed_at": "2026-04-25T22:59:45+0900"
     },
     {
       "step": 1,
