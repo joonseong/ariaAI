@@ -7,7 +7,8 @@
       "name": "network-haptics",
       "status": "completed",
       "started_at": "2026-04-25T23:49:07+0900",
-      "summary": "useNetworkStatus 훅, OfflineBanner 컴포넌트, lib/haptics.ts 구현 및 useLike/useFollow/useBookmark에 haptics.light() 추가"
+      "summary": "useNetworkStatus 훅, OfflineBanner 컴포넌트, lib/haptics.ts 구현 및 useLike/useFollow/useBookmark에 haptics.light() 추가",
+      "completed_at": "2026-04-25T23:53:00+0900"
     },
     {
       "step": 1,
