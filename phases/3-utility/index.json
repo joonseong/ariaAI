@@ -37,7 +37,10 @@
     {
       "step": 4,
       "name": "report-edit-delete",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T23:18:01+0900",
+      "summary": "ReportSheet 바텀시트 컴포넌트(신고 사유 선택, 기타 입력, 중복신고 체크), app/artwork/edit.tsx 구현(useArtworkEdit/useDiscardGuard, 제목·설명·태그 수정, 프리셋 도구 태그), artwork/[id].tsx에 더보기 메뉴 연동(본인: 수정→edit.tsx/삭제→확인다이얼로그, 타인: 신고→ReportSheet) — tsc 통과, expo export 빌드 통과",
+      "completed_at": "2026-04-25T23:25:00+0900"
     }
   ],
   "created_at": "2026-04-25T22:53:51+0900"
