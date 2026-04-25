@@ -13,7 +13,10 @@
     {
       "step": 1,
       "name": "onboarding",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T23:53:00+0900",
+      "summary": "useOnboarding 훅(Zustand + AsyncStorage), app/onboarding.tsx 3단계 화면(환영/도구선택/추천작가), _layout.tsx 온보딩 분기 추가",
+      "completed_at": "2026-04-25T23:58:00+0900"
     },
     {
       "step": 2,
