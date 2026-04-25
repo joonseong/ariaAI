@@ -4,7 +4,8 @@ import { Image } from 'expo-image';
 import { Artwork } from '@/types/artwork';
 import { EmptyState } from '@/components/common/EmptyState';
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const COLUMNS = 3;
+const ITEM_SIZE = Dimensions.get('window').width / COLUMNS;
 
 interface ArtworkGridProps {
   artworks: Artwork[];
@@ -26,7 +27,7 @@ export default function ArtworkGrid({
   const renderItem = ({ item }: { item: Artwork }) => (
     <Pressable
       onPress={() => onArtworkPress(item.id)}
-      style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH }}
+      style={{ width: ITEM_SIZE, height: ITEM_SIZE }}
       accessibilityLabel={item.title}
     >
       <Image
@@ -54,7 +55,7 @@ export default function ArtworkGrid({
       data={artworks}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
-      numColumns={1}
+      numColumns={COLUMNS}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
       ListEmptyComponent={emptyComponent}

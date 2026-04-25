@@ -51,7 +51,11 @@ export function useArtistProfile(artistId: string) {
     );
 
     if (result.success) {
-      setArtworks((prev) => [...prev, ...result.data.items]);
+      setArtworks((prev) => {
+        const existingIds = new Set(prev.map((a) => a.id));
+        const newItems = result.data.items.filter((a) => !existingIds.has(a.id));
+        return [...prev, ...newItems];
+      });
       setHasMoreArtworks(result.data.hasMore);
       artworkCursorRef.current = result.data.lastCursor as Date | undefined;
     }

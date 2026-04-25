@@ -223,8 +223,8 @@ function ImageSelector({
       <Text className="mb-2 text-sm font-medium text-text-primary">
         이미지 ({images.length}/{LIMITS.IMAGES_MAX})
       </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={{ flexDirection: 'row', gap: 12 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ overflow: 'visible' }}>
+        <View style={{ flexDirection: 'row', gap: 12, paddingTop: 10, paddingRight: 10 }}>
           {canAddMore && (
             <Pressable
               onPress={onPick}

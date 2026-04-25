@@ -11,7 +11,8 @@ function FAB() {
   return (
     <Pressable
       onPress={() => router.push('/upload')}
-      className="absolute bottom-24 right-5 h-14 w-14 items-center justify-center rounded-full bg-accent-primary"
+      className="absolute right-5 h-14 w-14 items-center justify-center rounded-full bg-accent-primary"
+      style={{ bottom: 108 }}
       style={{ elevation: 6, shadowColor: '#8B5CF6', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.4, shadowRadius: 8 }}
       accessibilityLabel="작품 등록"
       accessibilityRole="button"
