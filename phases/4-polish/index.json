@@ -21,7 +21,10 @@
     {
       "step": 2,
       "name": "empty-error-states",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-04-25T23:57:22+0900",
+      "summary": "PRD 3-12 빈 상태 메시지 전 화면 적용, 팔로잉/홈 액션 버튼 추가, ArtworkCard에 BookmarkButton 추가",
+      "completed_at": "2026-04-26T00:10:00+0900"
     },
     {
       "step": 3,

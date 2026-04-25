@@ -162,8 +162,8 @@ export default function ProfileScreen(): React.JSX.Element {
             </View>
           ) : (
             <EmptyState
-              message="아직 등록된 작품이 없습니다"
-              actionLabel="첫 작품 등록하기"
+              message="첫 작품을 등록해보세요"
+              actionLabel="작품 등록하기"
               onAction={() => router.push('/upload')}
             />
           )

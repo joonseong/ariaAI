@@ -49,7 +49,7 @@ export default function SavedArtworksScreen() {
           isLoadingMore={isLoadingMore}
           ListEmptyComponent={
             <EmptyState
-              message="아직 저장한 작품이 없습니다"
+              message="마음에 드는 작품을 저장해보세요"
               actionLabel="홈 피드 둘러보기"
               onAction={() => router.push('/')}
             />

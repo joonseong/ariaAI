@@ -43,7 +43,13 @@ export default function ArtistFollowingScreen() {
           data={users}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <UserListItem user={item} showFollowButton />}
-          ListEmptyComponent={<EmptyState message="아직 팔로우하는 작가가 없습니다" />}
+          ListEmptyComponent={
+            <EmptyState
+              message="아직 팔로우하는 작가가 없습니다"
+              actionLabel="작가 찾아보기"
+              onAction={() => router.push('/search')}
+            />
+          }
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={

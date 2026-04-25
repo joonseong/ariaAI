@@ -5,6 +5,7 @@ import { Artwork } from '@/types/artwork';
 import { formatRelativeTime } from '@/lib/formatters';
 import { Avatar } from '@/components/common/Avatar';
 import { LikeButton } from './LikeButton';
+import BookmarkButton from './BookmarkButton';
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -12,6 +13,7 @@ interface ArtworkCardProps {
   onLikePress: () => void;
   onArtistPress: () => void;
   liked: boolean;
+  initialBookmarked: boolean;
   isAuthenticated: boolean;
 }
 
@@ -21,6 +23,7 @@ export const ArtworkCard = React.memo(function ArtworkCard({
   onLikePress,
   onArtistPress,
   liked,
+  initialBookmarked,
   isAuthenticated,
 }: ArtworkCardProps) {
   const handleLikePress = () => {
@@ -70,6 +73,7 @@ export const ArtworkCard = React.memo(function ArtworkCard({
           </Pressable>
 
           <View className="flex-row items-center gap-3">
+            <BookmarkButton artworkId={artwork.id} initialBookmarked={initialBookmarked} />
             <LikeButton
               active={liked}
               count={artwork.likesCount}

@@ -78,6 +78,8 @@ export default function HomeScreen() {
         onLikePress={handleLikePress}
         likedArtworkIds={likedArtworkIds}
         isAuthenticated={isAuthenticated}
+        onEmptyAction={() => router.push('/search')}
+        emptyActionLabel="작가 찾아보기"
       />
 
       <LoginPromptSheet
