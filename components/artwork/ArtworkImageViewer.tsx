@@ -51,13 +51,13 @@ export function ArtworkImageViewer({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             width: SCREEN_WIDTH,
-            aspectRatio: 4 / 3,
+            height: SCREEN_WIDTH,
           }}
         >
           <Image
             source={{ uri: item }}
-            style={{ width: SCREEN_WIDTH, aspectRatio: 4 / 3 }}
-            contentFit="contain"
+            style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH }}
+            contentFit="cover"
             transition={200}
             placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
             accessibilityLabel="artwork image"

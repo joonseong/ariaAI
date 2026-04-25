@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { useImagePicker, SelectedImage } from '@/hooks/useImagePicker';
 import { useArtworkUpload, TOOL_PRESETS } from '@/hooks/useArtworkUpload';
-import { useDiscardGuard } from '@/hooks/useDiscardGuard';
 import { useAuthStore } from '@/stores/authStore';
 import { showToast } from '@/stores/toastStore';
 import { Button } from '@/components/common/Button';
@@ -22,9 +21,6 @@ export default function UploadScreen() {
   const [customTagInput, setCustomTagInput] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loginPromptVisible, setLoginPromptVisible] = useState(false);
-
-  const isDirty = upload.isDirty || images.length > 0;
-  useDiscardGuard(isDirty && !upload.isUploading);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -228,11 +224,11 @@ function ImageSelector({
         이미지 ({images.length}/{LIMITS.IMAGES_MAX})
       </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View className="flex-row gap-3">
+        <View style={{ flexDirection: 'row', gap: 12 }}>
           {canAddMore && (
             <Pressable
               onPress={onPick}
-              className="h-28 w-28 items-center justify-center rounded-lg border border-dashed border-border"
+              style={{ width: 112, height: 112, borderRadius: 8, borderWidth: 1, borderStyle: 'dashed', borderColor: '#2A2A2A', alignItems: 'center', justifyContent: 'center' }}
               accessibilityLabel="이미지 추가"
               accessibilityRole="button"
             >
@@ -241,18 +237,18 @@ function ImageSelector({
             </Pressable>
           )}
           {images.map((image, index) => (
-            <View key={image.uri} className="relative">
+            <View key={image.uri} style={{ position: 'relative' }}>
               <Image
                 source={{ uri: image.uri }}
-                className="h-28 w-28 rounded-lg"
+                style={{ width: 112, height: 112, borderRadius: 8 }}
                 contentFit="cover"
               />
               <Pressable
                 onPress={() => onRemove(index)}
-                className="absolute -right-2 -top-2 h-6 w-6 items-center justify-center rounded-full bg-semantic-error"
+                style={{ position: 'absolute', top: -8, right: -8, width: 24, height: 24, borderRadius: 12, backgroundColor: '#EF4444', alignItems: 'center', justifyContent: 'center' }}
                 accessibilityLabel={`이미지 ${index + 1} 삭제`}
               >
-                <Text className="text-xs font-bold text-text-primary">X</Text>
+                <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#F5F5F5' }}>X</Text>
               </Pressable>
             </View>
           ))}
