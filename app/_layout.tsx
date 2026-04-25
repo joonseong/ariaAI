@@ -13,6 +13,7 @@ export default function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" />
+        <Stack.Screen name="upload" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="artwork/[id]" />
         <Stack.Screen name="artwork/edit" />
         <Stack.Screen name="artist/[id]" />

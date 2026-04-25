@@ -141,8 +141,11 @@ export default function ProfileScreen(): React.JSX.Element {
         <MenuItem label="로그아웃" onPress={handleLogout} destructive />
       </View>
 
-      <View className="mt-4 border-t border-border">
-        <Text className="px-4 py-3 text-sm font-semibold text-text-primary">내 작품</Text>
+      <View className="mt-4 border-t border-border px-4 py-3">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-base font-bold text-text-primary">내 작품</Text>
+          <Text className="text-xs text-text-tertiary">{artworks.length}개</Text>
+        </View>
       </View>
     </View>
   );
@@ -164,7 +167,7 @@ export default function ProfileScreen(): React.JSX.Element {
             <EmptyState
               message="첫 작품을 등록해보세요"
               actionLabel="작품 등록하기"
-              onAction={() => router.push('/upload')}
+              onAction={() => router.push('/upload' as never)}
             />
           )
         }

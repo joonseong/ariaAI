@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, Alert, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Pressable, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
@@ -65,18 +65,26 @@ export default function UploadScreen() {
     if (result.success) {
       showToast('작품이 등록되었습니다', 'success');
       upload.reset();
-      router.push(`/artwork/${result.data}`);
+      router.replace(`/artwork/${result.data}`);
     } else {
       showToast(result.error.message, 'error');
     }
   }, [isAuthenticated, images, upload, router]);
 
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
+
   const canSubmit = images.length > 0 && upload.title.trim().length > 0 && !upload.isUploading;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
-      <View className="px-4 py-3">
-        <Text className="text-2xl font-bold text-text-primary">작품 등록</Text>
+      <View className="flex-row items-center justify-between px-4 py-3">
+        <Pressable onPress={handleClose} accessibilityLabel="닫기" hitSlop={8}>
+          <Text className="text-2xl text-text-primary">{'\u2715'}</Text>
+        </Pressable>
+        <Text className="text-base font-semibold text-text-primary">작품 등록</Text>
+        <View style={{ width: 28 }} />
       </View>
 
       <ScrollView
@@ -221,11 +229,22 @@ function ImageSelector({
       </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View className="flex-row gap-3">
+          {canAddMore && (
+            <Pressable
+              onPress={onPick}
+              className="h-28 w-28 items-center justify-center rounded-lg border border-dashed border-border"
+              accessibilityLabel="이미지 추가"
+              accessibilityRole="button"
+            >
+              <Text className="text-2xl text-text-tertiary">+</Text>
+              <Text className="mt-1 text-xs text-text-tertiary">추가</Text>
+            </Pressable>
+          )}
           {images.map((image, index) => (
             <View key={image.uri} className="relative">
               <Image
                 source={{ uri: image.uri }}
-                className="h-24 w-24 rounded-lg"
+                className="h-28 w-28 rounded-lg"
                 contentFit="cover"
               />
               <Pressable
@@ -237,17 +256,6 @@ function ImageSelector({
               </Pressable>
             </View>
           ))}
-          {canAddMore && (
-            <Pressable
-              onPress={onPick}
-              className="h-24 w-24 items-center justify-center rounded-lg border border-dashed border-border"
-              accessibilityLabel="이미지 추가"
-              accessibilityRole="button"
-            >
-              <Text className="text-2xl text-text-tertiary">+</Text>
-              <Text className="mt-1 text-xs text-text-tertiary">추가</Text>
-            </Pressable>
-          )}
         </View>
       </ScrollView>
       {error && (

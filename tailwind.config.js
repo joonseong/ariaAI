@@ -4,6 +4,18 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontSize: {
+        xs: ['14px', '18px'],
+        sm: ['16px', '22px'],
+        base: ['18px', '26px'],
+        lg: ['20px', '28px'],
+        xl: ['22px', '30px'],
+        '2xl': ['26px', '32px'],
+        '3xl': ['32px', '38px'],
+        '4xl': ['38px', '44px'],
+        '5xl': ['50px', '1'],
+        '6xl': ['62px', '1'],
+      },
       colors: {
         background: '#0D0D0D',
         surface: '#1A1A1A',

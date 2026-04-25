@@ -12,8 +12,7 @@ export function useImagePicker(maxImages: number = LIMITS.IMAGES_MAX) {
   const [images, setImages] = useState<SelectedImage[]>([]);
 
   const pickImages = useCallback(async () => {
-    const remaining = maxImages - images.length;
-    if (remaining <= 0) return;
+    if (images.length >= maxImages) return;
 
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -22,30 +21,21 @@ export function useImagePicker(maxImages: number = LIMITS.IMAGES_MAX) {
 
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
-      allowsMultipleSelection: true,
-      selectionLimit: remaining,
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
 
     if (result.canceled || result.assets.length === 0) return;
 
-    const validImages: SelectedImage[] = [];
-    for (const asset of result.assets) {
-      const isDuplicate = images.some((img) => img.uri === asset.uri);
-      if (isDuplicate) {
-        continue;
-      }
+    const asset = result.assets[0];
+    const isDuplicate = images.some((img) => img.uri === asset.uri);
+    if (isDuplicate) return;
 
-      validImages.push({
-        uri: asset.uri,
-        width: asset.width ?? 0,
-        height: asset.height ?? 0,
-      });
-    }
-
-    if (validImages.length > 0) {
-      setImages((prev) => [...prev, ...validImages].slice(0, maxImages));
-    }
+    setImages((prev) => [
+      ...prev,
+      { uri: asset.uri, width: asset.width ?? 0, height: asset.height ?? 0 },
+    ].slice(0, maxImages));
   }, [images, maxImages]);
 
   const removeImage = useCallback((index: number) => {
