@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import * as followsService from '@/services/follows';
+import { haptics } from '@/lib/haptics';
 
 export function useFollow(
   targetUserId: string,
@@ -16,6 +17,8 @@ export function useFollow(
     if (!user) return;
     if (pendingRef.current) return;
     pendingRef.current = true;
+
+    haptics.light();
 
     const prevFollowing = following;
     const prevFollowersCount = followersCount;

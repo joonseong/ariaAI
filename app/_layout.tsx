@@ -5,6 +5,7 @@ import { Redirect, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useAuth } from '@/hooks/useAuth';
 import { ToastContainer } from '@/components/common/Toast';
+import OfflineBanner from '@/components/common/OfflineBanner';
 
 export default function RootLayout() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,6 +30,7 @@ export default function RootLayout() {
         <Stack.Screen name="artwork" />
       </Stack>
       <ToastContainer />
+      <OfflineBanner />
       <StatusBar style="light" />
     </>
   );

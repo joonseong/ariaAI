@@ -2,9 +2,28 @@
   "project": "Aria",
   "phase": "4-polish",
   "steps": [
-    { "step": 0, "name": "network-haptics", "status": "pending" },
-    { "step": 1, "name": "onboarding", "status": "pending" },
-    { "step": 2, "name": "empty-error-states", "status": "pending" },
-    { "step": 3, "name": "integration-fix", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "network-haptics",
+      "status": "completed",
+      "started_at": "2026-04-25T23:49:07+0900",
+      "summary": "useNetworkStatus 훅, OfflineBanner 컴포넌트, lib/haptics.ts 구현 및 useLike/useFollow/useBookmark에 haptics.light() 추가"
+    },
+    {
+      "step": 1,
+      "name": "onboarding",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "empty-error-states",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "integration-fix",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-25T23:49:07+0900"
 }
