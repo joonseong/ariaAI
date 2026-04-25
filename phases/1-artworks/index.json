@@ -48,7 +48,7 @@
       "status": "completed",
       "started_at": "2026-04-25T21:22:41+0900",
       "summary": "ArtworkImageViewer(핀치줌+스와이프+도트 인디케이터), ArtistMiniCard(아바타+닉네임+화살표), ArtworkActionBar(좋아요+공유+더보기), app/artwork/[id].tsx(작품 상세 화면 — useArtworkDetail+useLike+checkLiked+비회원 로그인 유도+에러/삭제 상태 처리+공유+더보기 메뉴 UI) 구현, tsc --noEmit 통과, expo export 통과",
-      "completed_at": "2026-04-25T22:00:00+0900"
+      "completed_at": "2026-04-25T21:28:54+0900"
     }
   ],
   "created_at": "2026-04-24T22:58:59+0900"
