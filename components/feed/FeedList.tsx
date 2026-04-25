@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, forwardRef } from 'react';
 import { FlatList, View, ActivityIndicator, RefreshControl } from 'react-native';
 import { Artwork } from '@/types/artwork';
 import { ArtworkCard } from '@/components/artwork/ArtworkCard';
@@ -20,12 +20,15 @@ interface FeedListProps {
   onArtistPress: (userId: string) => void;
   onLikePress: (artworkId: string) => void;
   likedArtworkIds: Set<string>;
+  bookmarkedArtworkIds?: Set<string>;
   isAuthenticated: boolean;
+  onEmptyAction?: () => void;
+  emptyActionLabel?: string;
 }
 
 const CARD_ESTIMATED_HEIGHT = 350;
 
-export function FeedList({
+export const FeedList = forwardRef<FlatList<Artwork>, FeedListProps>(function FeedList({
   artworks,
   isLoading,
   isLoadingMore,
@@ -39,8 +42,11 @@ export function FeedList({
   onArtistPress,
   onLikePress,
   likedArtworkIds,
+  bookmarkedArtworkIds,
   isAuthenticated,
-}: FeedListProps) {
+  onEmptyAction,
+  emptyActionLabel,
+}: FeedListProps, ref) {
   const handleEndReached = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       onLoadMore();
@@ -56,11 +62,12 @@ export function FeedList({
           onLikePress={() => onLikePress(item.id)}
           onArtistPress={() => onArtistPress(item.authorId)}
           liked={likedArtworkIds.has(item.id)}
+          initialBookmarked={bookmarkedArtworkIds?.has(item.id) ?? false}
           isAuthenticated={isAuthenticated}
         />
       </View>
     ),
-    [onArtworkPress, onLikePress, onArtistPress, likedArtworkIds, isAuthenticated],
+    [onArtworkPress, onLikePress, onArtistPress, likedArtworkIds, bookmarkedArtworkIds, isAuthenticated],
   );
 
   const keyExtractor = useCallback((item: Artwork) => item.id, []);
@@ -76,13 +83,16 @@ export function FeedList({
   if (!isLoading && artworks.length === 0) {
     return (
       <EmptyState
-        message="아직 작품이 없습니다. 작가를 팔로우해보세요!"
+        message="작가를 팔로우하면 여기에 작품이 표시됩니다"
+        actionLabel={emptyActionLabel}
+        onAction={onEmptyAction}
       />
     );
   }
 
   return (
     <FlatList
+      ref={ref}
       data={artworks}
       renderItem={renderItem}
       keyExtractor={keyExtractor}
@@ -114,4 +124,4 @@ export function FeedList({
       contentContainerStyle={{ paddingTop: 16 }}
     />
   );
-}
+});

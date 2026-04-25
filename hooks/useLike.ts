@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useFeedStore } from '@/stores/feedStore';
 import * as likesService from '@/services/likes';
+import { haptics } from '@/lib/haptics';
 
 export function useLike(artworkId: string, initialLiked: boolean, initialCount: number) {
   const user = useAuthStore((state) => state.user);
@@ -14,6 +15,8 @@ export function useLike(artworkId: string, initialLiked: boolean, initialCount: 
     if (!user) return;
     if (pendingRef.current) return;
     pendingRef.current = true;
+
+    haptics.light();
 
     const prevLiked = liked;
     const prevCount = count;

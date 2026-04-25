@@ -49,7 +49,7 @@ export default function LikedArtworksScreen() {
           isLoadingMore={isLoadingMore}
           ListEmptyComponent={
             <EmptyState
-              message="아직 좋아요한 작품이 없습니다"
+              message="마음에 드는 작품에 하트를 눌러보세요"
               actionLabel="홈 피드 둘러보기"
               onAction={() => router.push('/')}
             />

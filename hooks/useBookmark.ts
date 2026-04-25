@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import * as bookmarksService from '@/services/bookmarks';
+import { haptics } from '@/lib/haptics';
 
 export function useBookmark(artworkId: string, initialBookmarked: boolean) {
   const user = useAuthStore((state) => state.user);
@@ -11,6 +12,8 @@ export function useBookmark(artworkId: string, initialBookmarked: boolean) {
     if (!user) return;
     if (pendingRef.current) return;
     pendingRef.current = true;
+
+    haptics.light();
 
     const prevBookmarked = bookmarked;
     setBookmarked(!bookmarked);

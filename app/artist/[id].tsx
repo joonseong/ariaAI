@@ -195,7 +195,7 @@ export default function ArtistPortfolioScreen() {
         ListHeaderComponent={profileHeader}
         ListEmptyComponent={
           isLoadingMessages ? undefined : (
-            <EmptyState message="아직 방명록이 없습니다. 첫 번째 메시지를 남겨보세요!" />
+            <EmptyState message="아직 방명록이 없습니다. 첫 메시지를 남겨보세요!" />
           )
         }
         onEndReached={loadMore}

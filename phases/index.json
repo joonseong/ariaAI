@@ -22,7 +22,8 @@
     },
     {
       "dir": "4-polish",
-      "status": "pending"
+      "status": "completed",
+      "completed_at": "2026-04-26T00:08:17+0900"
     }
   ]
 }

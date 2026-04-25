@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { View, Text, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useScrollToTop } from '@react-navigation/native';
 import { useArtworks } from '@/hooks/useArtworks';
 import { useAuthStore } from '@/stores/authStore';
 import { FeedList } from '@/components/feed/FeedList';
@@ -25,6 +26,8 @@ export default function HomeScreen() {
 
   const [loginPromptVisible, setLoginPromptVisible] = useState(false);
   const likedArtworkIds = useMemo(() => new Set<string>(), []);
+  const feedListRef = useRef<FlatList<Artwork>>(null);
+  useScrollToTop(feedListRef);
 
   useEffect(() => {
     loadFeed();
@@ -64,6 +67,7 @@ export default function HomeScreen() {
       </View>
 
       <FeedList
+        ref={feedListRef}
         artworks={artworks}
         isLoading={isLoading}
         isLoadingMore={isLoadingMore}
@@ -78,6 +82,8 @@ export default function HomeScreen() {
         onLikePress={handleLikePress}
         likedArtworkIds={likedArtworkIds}
         isAuthenticated={isAuthenticated}
+        onEmptyAction={() => router.push('/search')}
+        emptyActionLabel="작가 찾아보기"
       />
 
       <LoginPromptSheet

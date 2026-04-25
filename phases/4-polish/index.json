@@ -2,9 +2,39 @@
   "project": "Aria",
   "phase": "4-polish",
   "steps": [
-    { "step": 0, "name": "network-haptics", "status": "pending" },
-    { "step": 1, "name": "onboarding", "status": "pending" },
-    { "step": 2, "name": "empty-error-states", "status": "pending" },
-    { "step": 3, "name": "integration-fix", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "network-haptics",
+      "status": "completed",
+      "started_at": "2026-04-25T23:49:07+0900",
+      "summary": "useNetworkStatus 훅, OfflineBanner 컴포넌트, lib/haptics.ts 구현 및 useLike/useFollow/useBookmark에 haptics.light() 추가",
+      "completed_at": "2026-04-25T23:53:00+0900"
+    },
+    {
+      "step": 1,
+      "name": "onboarding",
+      "status": "completed",
+      "started_at": "2026-04-25T23:53:00+0900",
+      "summary": "useOnboarding 훅(Zustand + AsyncStorage), app/onboarding.tsx 3단계 화면(환영/도구선택/추천작가), _layout.tsx 온보딩 분기 추가",
+      "completed_at": "2026-04-25T23:57:22+0900"
+    },
+    {
+      "step": 2,
+      "name": "empty-error-states",
+      "status": "completed",
+      "started_at": "2026-04-25T23:57:22+0900",
+      "summary": "PRD 3-12 빈 상태 메시지 전 화면 적용, 팔로잉/홈 액션 버튼 추가, ArtworkCard에 BookmarkButton 추가",
+      "completed_at": "2026-04-26T00:02:17+0900"
+    },
+    {
+      "step": 3,
+      "name": "integration-fix",
+      "status": "completed",
+      "started_at": "2026-04-26T00:02:17+0900",
+      "summary": "SearchScreen 사용자 탭 시 artist 페이지 이동 수정, FeedList forwardRef 추가 + useScrollToTop 홈/검색 탭 적용, 업로드 탭 비회원 즉시 LoginPromptSheet 표시, _layout.tsx에 artist/profile 라우트 추가",
+      "completed_at": "2026-04-26T00:08:17+0900"
+    }
+  ],
+  "created_at": "2026-04-25T23:49:07+0900",
+  "completed_at": "2026-04-26T00:08:17+0900"
 }
