@@ -1,0 +1,11 @@
+{
+  "project": "Aria",
+  "phase": "3-utility",
+  "steps": [
+    { "step": 0, "name": "utility-services", "status": "pending" },
+    { "step": 1, "name": "utility-hooks", "status": "pending" },
+    { "step": 2, "name": "search-screen", "status": "pending" },
+    { "step": 3, "name": "profile-settings", "status": "pending" },
+    { "step": 4, "name": "report-edit-delete", "status": "pending" }
+  ]
+}
