@@ -31,7 +31,7 @@
       "name": "artist-portfolio",
       "status": "completed",
       "started_at": "2026-04-25T22:36:41+0900",
-      "completed_at": "2026-04-25T23:10:00+0900",
+      "completed_at": "2026-04-25T22:43:32+0900",
       "summary": "app/artist/[id].tsx (포트폴리오: 헤더·통계·팔로우버튼·작품그리드·방명록 탭) + app/artist/[id]/guestbook.tsx (방명록 전체 화면) 구현 (tsc 타입 에러 없음, expo export 빌드 성공)"
     },
     {
