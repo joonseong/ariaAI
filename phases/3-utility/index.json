@@ -2,10 +2,33 @@
   "project": "Aria",
   "phase": "3-utility",
   "steps": [
-    { "step": 0, "name": "utility-services", "status": "pending" },
-    { "step": 1, "name": "utility-hooks", "status": "pending" },
-    { "step": 2, "name": "search-screen", "status": "pending" },
-    { "step": 3, "name": "profile-settings", "status": "pending" },
-    { "step": 4, "name": "report-edit-delete", "status": "pending" }
-  ]
+    {
+      "step": 0,
+      "name": "utility-services",
+      "status": "completed",
+      "started_at": "2026-04-25T22:53:51+0900",
+      "summary": "search.ts (prefix/tag 검색, 인기태그), reports.ts (신고 생성/중복체크/자동숨김), users.ts 확장 (updateProfileImage, updateBio, deleteAccount) 구현 — tsc 통과, 테스트 32개 신규 + 전체 133개 통과"
+    },
+    {
+      "step": 1,
+      "name": "utility-hooks",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "name": "search-screen",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "name": "profile-settings",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "name": "report-edit-delete",
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-04-25T22:53:51+0900"
 }
