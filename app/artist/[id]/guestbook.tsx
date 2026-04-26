@@ -6,7 +6,6 @@ import { useGuestbook } from '@/hooks/useGuestbook';
 import { useAuthStore } from '@/stores/authStore';
 import GuestbookMessageItem from '@/components/guestbook/GuestbookMessage';
 import GuestbookInput from '@/components/guestbook/GuestbookInput';
-import { EmptyState } from '@/components/common/EmptyState';
 import { LoginPromptSheet } from '@/components/common/LoginPromptSheet';
 import { showToast } from '@/stores/toastStore';
 
@@ -58,22 +57,23 @@ export default function GuestbookScreen() {
   }, [deleteMessage]);
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={['top', 'bottom']}>
-      <View className="flex-row items-center border-b border-border px-4 py-3">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }} edges={['top']}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#2A2A2A' }}>
         <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기">
-          <Text className="text-2xl text-text-primary">{'\u2190'}</Text>
+          <Text style={{ fontSize: 22, color: '#F5F5F5' }}>{'\u2190'}</Text>
         </Pressable>
-        <Text className="ml-4 text-lg font-semibold text-text-primary">방명록</Text>
+        <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: '#F5F5F5' }}>방명록</Text>
       </View>
 
       {isLoading ? (
-        <View className="flex-1 items-center justify-center">
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <ActivityIndicator size="large" color="#8B5CF6" />
         </View>
       ) : (
         <FlatList
           data={messages}
           keyExtractor={(item) => item.id}
+          inverted
           renderItem={({ item }) => (
             <GuestbookMessageItem
               message={item}
@@ -83,13 +83,19 @@ export default function GuestbookScreen() {
             />
           )}
           ListEmptyComponent={
-            <EmptyState message="아직 방명록이 없습니다. 첫 번째 메시지를 남겨보세요!" />
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40, transform: [{ scaleY: -1 }] }}>
+              <Text style={{ fontSize: 40, marginBottom: 12 }}>{'\uD83D\uDCAC'}</Text>
+              <Text style={{ fontSize: 15, color: '#808080', textAlign: 'center' }}>
+                아직 방명록이 없습니다{'\n'}첫 번째 메시지를 남겨보세요!
+              </Text>
+            </View>
           }
           onEndReached={loadMore}
           onEndReachedThreshold={0.5}
+          contentContainerStyle={{ paddingVertical: 12 }}
           ListFooterComponent={
             isLoadingMore ? (
-              <View className="items-center py-4">
+              <View style={{ alignItems: 'center', paddingVertical: 16 }}>
                 <ActivityIndicator size="small" color="#8B5CF6" />
               </View>
             ) : undefined
@@ -106,9 +112,9 @@ export default function GuestbookScreen() {
       ) : (
         <Pressable
           onPress={() => setLoginPromptVisible(true)}
-          className="border-t border-border bg-elevated px-4 py-3"
+          style={{ borderTopWidth: 1, borderTopColor: '#2A2A2A', backgroundColor: '#262626', paddingHorizontal: 16, paddingVertical: 14 }}
         >
-          <Text className="text-center text-sm text-text-tertiary">로그인 후 작성 가능합니다</Text>
+          <Text style={{ textAlign: 'center', fontSize: 14, color: '#808080' }}>로그인 후 작성 가능합니다</Text>
         </Pressable>
       )}
 

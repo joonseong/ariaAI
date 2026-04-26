@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { LIMITS } from '@/lib/constants';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface GuestbookInputProps {
   onSend: (content: string) => Promise<void>;
@@ -25,9 +25,10 @@ export default function GuestbookInput({
   const [content, setContent] = useState('');
   const [isSending, setIsSending] = useState(false);
   const inputRef = useRef<TextInput>(null);
+  const insets = useSafeAreaInsets();
 
   const trimmed = content.trim();
-  const canSend = trimmed.length >= 1 && trimmed.length <= LIMITS.GUESTBOOK_PAGE_SIZE && !isSending && !disabled;
+  const canSend = trimmed.length >= 1 && trimmed.length <= 200 && !isSending && !disabled;
 
   const handleSend = async () => {
     if (!canSend) return;
@@ -35,7 +36,6 @@ export default function GuestbookInput({
     await onSend(trimmed);
     setContent('');
     setIsSending(false);
-    inputRef.current?.blur();
   };
 
   return (
@@ -43,48 +43,62 @@ export default function GuestbookInput({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       {replyTo && (
-        <View className="flex-row items-center border-t border-border bg-elevated px-4 py-2">
-          <Text className="flex-1 text-xs text-text-secondary">
-            @{replyTo.nickname}에게 답글
+        <View style={{ flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#2A2A2A', backgroundColor: '#262626', paddingHorizontal: 16, paddingVertical: 8 }}>
+          <View style={{ width: 3, height: 16, backgroundColor: '#8B5CF6', borderRadius: 2, marginRight: 8 }} />
+          <Text style={{ flex: 1, fontSize: 13, color: '#A3A3A3' }}>
+            {replyTo.nickname}님에게 답글
           </Text>
-          <Pressable
-            onPress={onCancelReply}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="답글 취소"
-          >
-            <Text className="text-xs text-text-tertiary">취소</Text>
+          <Pressable onPress={onCancelReply} hitSlop={8}>
+            <Text style={{ fontSize: 13, color: '#808080' }}>{'\u2715'}</Text>
           </Pressable>
         </View>
       )}
-      <View className="flex-row items-end border-t border-border bg-elevated px-4 py-2">
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        borderTopWidth: 1,
+        borderTopColor: '#2A2A2A',
+        backgroundColor: '#0D0D0D',
+        paddingHorizontal: 12,
+        paddingTop: 8,
+        paddingBottom: Math.max(insets.bottom, 8),
+      }}>
         <TextInput
           ref={inputRef}
           value={content}
           onChangeText={setContent}
-          placeholder="방명록을 남겨보세요..."
+          placeholder="메시지를 입력하세요..."
           placeholderTextColor="#808080"
           maxLength={200}
           multiline
           editable={!disabled && !isSending}
-          className="max-h-24 flex-1 rounded-xl bg-background px-3 py-2 text-sm text-text-primary"
-          accessibilityLabel="방명록 입력"
+          style={{
+            flex: 1,
+            maxHeight: 100,
+            backgroundColor: '#1A1A1A',
+            borderRadius: 20,
+            paddingHorizontal: 16,
+            paddingTop: 10,
+            paddingBottom: 10,
+            fontSize: 15,
+            color: '#F5F5F5',
+          }}
         />
         <Pressable
           onPress={handleSend}
           disabled={!canSend}
-          className={`ml-2 items-center justify-center rounded-full p-2 ${
-            canSend ? 'bg-accent-primary' : 'bg-elevated'
-          }`}
-          accessibilityRole="button"
-          accessibilityLabel="전송"
+          style={{
+            marginLeft: 8,
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: canSend ? '#8B5CF6' : '#262626',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          <Text
-            className={`text-sm font-medium ${
-              canSend ? 'text-text-primary' : 'text-text-tertiary'
-            }`}
-          >
-            전송
+          <Text style={{ fontSize: 16, color: canSend ? '#FFFFFF' : '#808080' }}>
+            {'\u2191'}
           </Text>
         </Pressable>
       </View>
