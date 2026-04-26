@@ -34,6 +34,8 @@ function createMockArtwork(id: string, createdAt?: Date): Artwork {
     thumbnailUrl: 'url',
     tags: [],
     tool: 'Midjourney',
+    prompt: null,
+    hasPrompt: false,
     likesCount: 0,
     reportCount: 0,
     isHidden: false,

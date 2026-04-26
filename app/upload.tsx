@@ -120,6 +120,23 @@ export default function UploadScreen() {
           />
         </View>
 
+        <View className="mt-4">
+          <Input
+            label="생성 프롬프트"
+            placeholder="사용한 프롬프트를 입력해주세요 (선택)"
+            value={upload.prompt}
+            onChangeText={upload.setPrompt}
+            maxLength={LIMITS.DESCRIPTION_MAX}
+            multiline
+            error={errors.prompt}
+          />
+          {upload.prompt.trim().length > 0 && (
+            <Text className="mt-1 text-xs text-text-tertiary">
+              프롬프트는 잠금 상태로 저장됩니다. 다른 사용자가 열람하려면 100P가 필요합니다.
+            </Text>
+          )}
+        </View>
+
         <View className="mt-6">
           <Text className="mb-2 text-sm font-medium text-text-primary">사용 도구</Text>
           <View className="flex-row flex-wrap gap-2">

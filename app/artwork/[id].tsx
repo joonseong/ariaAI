@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useArtworkDetail } from '@/hooks/useArtworkDetail';
 import { useLike } from '@/hooks/useLike';
 import { useArtworkDelete } from '@/hooks/useArtworkDelete';
+import { usePromptUnlock } from '@/hooks/usePromptUnlock';
 import { useAuthStore } from '@/stores/authStore';
 import { showToast } from '@/stores/toastStore';
 import * as likesService from '@/services/likes';
@@ -29,7 +30,16 @@ export default function ArtworkDetailScreen() {
   const [likeReady, setLikeReady] = useState(false);
   const [loginPromptVisible, setLoginPromptVisible] = useState(false);
   const [reportSheetVisible, setReportSheetVisible] = useState(false);
+  const [unlockedPrompt, setUnlockedPrompt] = useState<string | null>(null);
   const { isDeleting, deleteArtwork } = useArtworkDelete();
+  const {
+    isUnlocked,
+    isChecking: isCheckingUnlock,
+    isUnlocking,
+    isOwner,
+    costPoints,
+    unlock,
+  } = usePromptUnlock(artwork?.id ?? '', artwork?.authorId ?? '');
 
   useEffect(() => {
     if (!user || !artwork) { setLikeReady(true); return; }
@@ -104,6 +114,44 @@ export default function ArtworkDetailScreen() {
   }, [artwork, user, router, handleDeleteConfirm]);
 
   const handleBack = useCallback(() => router.back(), [router]);
+
+  const handleUnlockPrompt = useCallback(async () => {
+    if (!isAuthenticated) { setLoginPromptVisible(true); return; }
+    if (!artwork) return;
+
+    const balance = user?.pointBalance ?? 0;
+    if (balance < costPoints) {
+      Alert.alert(
+        '포인트 부족',
+        `프롬프트 열람에 ${costPoints}P가 필요합니다.\n현재 잔액: ${balance}P\n\n포인트를 충전하시겠습니까?`,
+        [
+          { text: '취소', style: 'cancel' },
+          { text: '충전하기', onPress: () => router.push('/profile/points' as never) },
+        ],
+      );
+      return;
+    }
+
+    Alert.alert(
+      '프롬프트 열람',
+      `${costPoints}P를 사용하여 프롬프트를 열람하시겠습니까?\n현재 잔액: ${balance}P`,
+      [
+        { text: '취소', style: 'cancel' },
+        {
+          text: '열람하기',
+          onPress: async () => {
+            const result = await unlock();
+            if (result.success && result.prompt) {
+              setUnlockedPrompt(result.prompt);
+              showToast('프롬프트가 열람되었습니다', 'success');
+            } else {
+              showToast(result.errorMessage ?? '열람에 실패했습니다', 'error');
+            }
+          },
+        },
+      ],
+    );
+  }, [isAuthenticated, artwork, user, costPoints, unlock, router]);
 
   useEffect(() => {
     if (!isLoading && !error && artwork === null && id) {
@@ -185,6 +233,51 @@ export default function ArtworkDetailScreen() {
             onPress={handleArtistPress}
           />
         </View>
+
+        {artwork.hasPrompt && (
+          <>
+            <View className="mx-4 mb-4 h-px bg-border" />
+            <View className="px-4 pb-8">
+              <Text className="mb-3 text-base font-semibold text-text-primary">생성 프롬프트</Text>
+              {isCheckingUnlock ? (
+                <ActivityIndicator size="small" color="#F53356" />
+              ) : (isUnlocked || isOwner) ? (
+                <View className="rounded-xl bg-surface p-4">
+                  <Text className="text-sm leading-5 text-text-secondary" selectable>
+                    {unlockedPrompt ?? artwork.prompt}
+                  </Text>
+                </View>
+              ) : (
+                <View className="items-center rounded-xl bg-surface p-6">
+                  <Text className="mb-1 text-2xl">🔒</Text>
+                  <Text className="mb-4 text-center text-sm text-text-secondary">
+                    이 프롬프트는 잠겨있습니다.{'\n'}열람하려면 {costPoints}P가 필요합니다.
+                  </Text>
+                  <Pressable
+                    onPress={handleUnlockPrompt}
+                    disabled={isUnlocking}
+                    className="rounded-full bg-accent-primary px-6 py-3"
+                    accessibilityLabel="프롬프트 열람하기"
+                  >
+                    {isUnlocking ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Text className="text-sm font-semibold text-white">{costPoints}P로 프롬프트 열람하기</Text>
+                    )}
+                  </Pressable>
+                  {(user?.pointBalance ?? 0) < costPoints && (
+                    <Pressable
+                      onPress={() => router.push('/profile/points' as never)}
+                      className="mt-3"
+                    >
+                      <Text className="text-xs text-accent-primary">포인트 충전하기</Text>
+                    </Pressable>
+                  )}
+                </View>
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
 
       <ArtworkActionBar

@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useArtistProfile } from '@/hooks/useArtistProfile';
 import { useAuth } from '@/hooks/useAuth';
+import { usePoints } from '@/hooks/usePoints';
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/common/Button';
 import ArtworkGrid from '@/components/artwork/ArtworkGrid';
@@ -41,6 +42,7 @@ export default function ProfileScreen(): React.JSX.Element {
 
   const { artworks, isLoading, loadMoreArtworks, isLoadingMoreArtworks, load } =
     useArtistProfile(user?.id ?? '');
+  const { balance } = usePoints();
 
   useEffect(() => {
     if (user?.id) load();
@@ -134,6 +136,17 @@ export default function ProfileScreen(): React.JSX.Element {
       </View>
 
       <View className="border-t border-border">
+        <Pressable
+          onPress={() => router.push('/profile/points')}
+          className="flex-row items-center justify-between border-b border-border px-4 py-4"
+          accessibilityRole="button"
+        >
+          <Text className="text-sm text-text-primary">포인트 충전</Text>
+          <View className="flex-row items-center gap-1">
+            <Text className="text-sm font-semibold text-accent-primary">{balance.toLocaleString()}P</Text>
+            <Text className="text-text-tertiary">›</Text>
+          </View>
+        </Pressable>
         <MenuItem label="좋아요한 작품" onPress={() => router.push('/profile/liked')} />
         <MenuItem label="저장한 작품" onPress={() => router.push('/profile/saved')} />
         <MenuItem label="팔로워" onPress={() => router.push('/profile/followers')} />

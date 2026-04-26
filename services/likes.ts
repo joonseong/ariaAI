@@ -36,6 +36,8 @@ function toArtwork(id: string, data: Record<string, unknown>): Artwork {
     thumbnailUrl: data.thumbnailUrl as string,
     tags: data.tags as string[],
     tool: data.tool as string,
+    prompt: (data.prompt as string | null) ?? null,
+    hasPrompt: (data.hasPrompt as boolean) ?? false,
     likesCount: data.likesCount as number,
     reportCount: data.reportCount as number,
     isHidden: data.isHidden as boolean,

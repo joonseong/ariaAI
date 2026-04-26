@@ -112,6 +112,8 @@ function makeArtworkDoc(id: string, overrides?: Record<string, unknown>) {
       thumbnailUrl: 'https://storage.example.com/img1.jpg',
       tags: ['midjourney'],
       tool: 'Midjourney',
+        prompt: null,
+        hasPrompt: false,
       likesCount: 0,
       reportCount: 0,
       isHidden: false,
@@ -129,6 +131,7 @@ describe('createArtwork', () => {
     images: ['file:///img1.jpg', 'file:///img2.jpg'],
     tags: ['stable-diffusion'],
     tool: 'Stable Diffusion',
+    prompt: '',
     authorNickname: 'Artist',
     authorProfileImageUrl: null,
   };

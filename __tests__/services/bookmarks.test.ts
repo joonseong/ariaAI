@@ -232,6 +232,8 @@ describe('getBookmarkedArtworks', () => {
         thumbnailUrl: 'https://img.jpg',
         tags: [],
         tool: 'Midjourney',
+        prompt: null,
+        hasPrompt: false,
         likesCount: 5,
         reportCount: 0,
         isHidden: false,

@@ -9,6 +9,8 @@ export interface Artwork {
   thumbnailUrl: string;
   tags: string[];
   tool: string;
+  prompt: string | null;
+  hasPrompt: boolean;
   likesCount: number;
   reportCount: number;
   isHidden: boolean;
@@ -22,6 +24,7 @@ export interface ArtworkFormData {
   images: string[];
   tags: string[];
   tool: string;
+  prompt: string;
   authorNickname: string;
   authorProfileImageUrl: string | null;
 }

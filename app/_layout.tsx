@@ -25,6 +25,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile/following" />
         <Stack.Screen name="profile/liked" />
         <Stack.Screen name="profile/saved" />
+        <Stack.Screen name="profile/points" />
       </Stack>
       <ToastContainer />
       <OfflineBanner />

@@ -22,6 +22,7 @@ export function useArtworkUpload() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [tool, setTool] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -73,9 +74,13 @@ export function useArtworkUpload() {
         errors.tags = `태그는 최대 ${LIMITS.TAGS_MAX}개까지 가능합니다`;
       }
 
+      if (prompt.trim().length > LIMITS.DESCRIPTION_MAX) {
+        errors.prompt = `프롬프트는 ${LIMITS.DESCRIPTION_MAX}자 이내로 입력해주세요`;
+      }
+
       return { valid: Object.keys(errors).length === 0, errors };
     },
-    [title, description, tags],
+    [title, description, tags, prompt],
   );
 
   const submit = useCallback(
@@ -102,6 +107,7 @@ export function useArtworkUpload() {
           {
             title: title.trim(),
             description: description.trim(),
+            prompt: prompt.trim(),
             images: resizedUris,
             tags,
             tool: tool ?? '',
@@ -125,6 +131,7 @@ export function useArtworkUpload() {
   const reset = useCallback(() => {
     setTitle('');
     setDescription('');
+    setPrompt('');
     setTags([]);
     setTool(null);
     setIsUploading(false);
@@ -136,6 +143,8 @@ export function useArtworkUpload() {
     setTitle,
     description,
     setDescription,
+    prompt,
+    setPrompt,
     tags,
     addTag,
     removeTag,

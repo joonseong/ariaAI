@@ -9,6 +9,7 @@ export interface User {
   followingCount: number;
   artworksCount: number;
   bookmarksCount: number;
+  pointBalance: number;
   loginProvider: 'email' | 'google' | 'apple';
   isDeleted: boolean;
   createdAt: Date;

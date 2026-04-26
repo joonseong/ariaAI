@@ -39,6 +39,8 @@ function toArtwork(id: string, data: Record<string, unknown>): Artwork {
     thumbnailUrl: data.thumbnailUrl as string,
     tags: data.tags as string[],
     tool: data.tool as string,
+    prompt: (data.prompt as string | null) ?? null,
+    hasPrompt: (data.hasPrompt as boolean) ?? false,
     likesCount: data.likesCount as number,
     reportCount: data.reportCount as number,
     isHidden: data.isHidden as boolean,
@@ -71,6 +73,7 @@ export async function createArtwork(
         const artworkRef = doc(collection(db, 'artworks'));
         artworkId = artworkRef.id;
 
+        const hasPrompt = formData.prompt.trim().length > 0;
         transaction.set(artworkRef, {
           authorId: userId,
           authorNickname: formData.authorNickname,
@@ -81,6 +84,8 @@ export async function createArtwork(
           thumbnailUrl: imageUrls[0],
           tags: formData.tags,
           tool: formData.tool,
+          prompt: hasPrompt ? formData.prompt.trim() : null,
+          hasPrompt,
           likesCount: 0,
           reportCount: 0,
           isHidden: false,
