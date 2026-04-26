@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Pressable, Text, Animated } from 'react-native';
 import { haptics } from '@/lib/haptics';
 import { formatCount } from '@/lib/formatters';
+import IconHeart from '@/assets/icons/icon.heart.svg';
 
 interface LikeButtonProps {
   active: boolean;
@@ -42,7 +43,7 @@ export function LikeButton({
     onPress();
   };
 
-  const iconSize = size === 'large' ? 'text-2xl' : 'text-base';
+  const iconSize = size === 'large' ? 24 : 16;
   const countSize = size === 'large' ? 'text-sm' : 'text-xs';
 
   return (
@@ -53,12 +54,14 @@ export function LikeButton({
       accessibilityRole="button"
       accessibilityLabel={active ? '좋아요 취소' : '좋아요'}
     >
-      <Animated.Text
-        className={`${iconSize} ${active ? 'text-accent-heart' : 'text-text-tertiary'}`}
-        style={{ transform: [{ scale }] }}
-      >
-        {active ? '\u2665' : '\u2661'}
-      </Animated.Text>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <IconHeart
+          width={iconSize}
+          height={iconSize}
+          fill={active ? '#F43F5E' : 'none'}
+          color={active ? '#F43F5E' : '#808080'}
+        />
+      </Animated.View>
       {count > 0 && (
         <Text className={`ml-1 ${countSize} text-text-secondary`}>
           {formatCount(count)}

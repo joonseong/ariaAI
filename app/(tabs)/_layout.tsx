@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { Tabs, useRouter } from 'expo-router';
+import IconPicture from '@/assets/icons/icon.picture.svg';
+import IconSearch from '@/assets/icons/icon.search.svg';
+import IconProfile from '@/assets/icons/icon.profile.svg';
+import IconPlus from '@/assets/icons/icon.plus.svg';
 
-function TabIcon({ label, color }: { label: string; color: string }) {
-  return <Text style={{ color, fontSize: 20 }}>{label}</Text>;
+function TabIcon({ Icon, color }: { Icon: React.FC<{ width: number; height: number; color?: string; fill?: string }>; color: string }) {
+  return <Icon width={24} height={24} fill={color} color={color} />;
 }
 
 function FAB() {
@@ -16,7 +20,7 @@ function FAB() {
       accessibilityLabel="작품 등록"
       accessibilityRole="button"
     >
-      <Text className="text-2xl font-bold text-white">+</Text>
+      <IconPlus width={28} height={28} fill="#FFFFFF" color="#FFFFFF" />
     </Pressable>
   );
 }
@@ -39,21 +43,21 @@ export default function TabsLayout() {
           name="home/index"
           options={{
             title: '홈',
-            tabBarIcon: ({ color }) => <TabIcon label="⌂" color={color} />,
+            tabBarIcon: ({ color }) => <TabIcon Icon={IconPicture} color={color} />,
           }}
         />
         <Tabs.Screen
           name="search/index"
           options={{
             title: '검색',
-            tabBarIcon: ({ color }) => <TabIcon label="⌕" color={color} />,
+            tabBarIcon: ({ color }) => <TabIcon Icon={IconSearch} color={color} />,
           }}
         />
         <Tabs.Screen
           name="profile/index"
           options={{
             title: '프로필',
-            tabBarIcon: ({ color }) => <TabIcon label="⊙" color={color} />,
+            tabBarIcon: ({ color }) => <TabIcon Icon={IconProfile} color={color} />,
           }}
         />
       </Tabs>

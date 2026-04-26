@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import IconShare from '@/assets/icons/icon.share.svg';
+import IconMore from '@/assets/icons/icon.more.svg';
 import { LikeButton } from './LikeButton';
 
 interface ArtworkActionBarProps {
@@ -39,7 +41,7 @@ export function ArtworkActionBar({
         accessibilityLabel="공유"
         accessibilityRole="button"
       >
-        <Text className="text-xl text-text-secondary">{'\u21AA'}</Text>
+        <IconShare width={22} height={22} color="#A0A0A0" />
       </Pressable>
 
       <View className="flex-1" />
@@ -50,7 +52,7 @@ export function ArtworkActionBar({
         accessibilityLabel="더보기"
         accessibilityRole="button"
       >
-        <Text className="text-xl text-text-secondary">{'\u22EF'}</Text>
+        <IconMore width={22} height={22} color="#A0A0A0" />
       </Pressable>
     </View>
   );

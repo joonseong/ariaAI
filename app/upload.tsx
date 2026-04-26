@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, Keyboard } from 'react-native';
+import IconClose from '@/assets/icons/icon.close.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
@@ -77,7 +78,7 @@ export default function UploadScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={handleClose} accessibilityLabel="닫기" hitSlop={8}>
-          <Text className="text-2xl text-text-primary">{'\u2715'}</Text>
+          <IconClose width={24} height={24} color="#E5E5E5" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary">작품 등록</Text>
         <View style={{ width: 28 }} />

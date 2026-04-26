@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, Share, Alert, ActivityIndicator } from 'react-native';
+import IconBack from '@/assets/icons/icon.back.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useArtworkDetail } from '@/hooks/useArtworkDetail';
@@ -125,7 +126,7 @@ export default function ArtworkDetailScreen() {
       <SafeAreaView className="flex-1 bg-background">
         <View className="px-4 py-3">
           <Pressable onPress={handleBack} accessibilityLabel="뒤로가기">
-            <Text className="text-2xl text-text-primary">{'\u2190'}</Text>
+            <IconBack width={24} height={24} color="#E5E5E5" />
           </Pressable>
         </View>
         <ErrorState
@@ -140,7 +141,7 @@ export default function ArtworkDetailScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={handleBack} accessibilityLabel="뒤로가기">
-          <Text className="text-2xl text-text-primary">{'\u2190'}</Text>
+          <IconBack width={24} height={24} color="#E5E5E5" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary" numberOfLines={1}>
           작품 상세
