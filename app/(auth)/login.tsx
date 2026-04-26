@@ -14,6 +14,7 @@ import { isValidEmail } from '@/lib/validators';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { showToast } from '@/stores/toastStore';
+import BrandLogo from '@/assets/icon.logo.brand.svg';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -83,9 +84,9 @@ export default function LoginScreen() {
           contentContainerClassName="flex-grow justify-center px-4"
           keyboardShouldPersistTaps="handled"
         >
-          <Text className="mb-10 text-center text-2xl font-bold text-text-primary">
-            Aria
-          </Text>
+          <View className="mb-12 items-center">
+            <BrandLogo width={200} height={89} />
+          </View>
 
           <View className="mb-4">
             <Input
