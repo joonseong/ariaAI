@@ -35,7 +35,7 @@ export default function MyFollowersScreen() {
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#8B5CF6" />
+          <ActivityIndicator size="large" color="#F53356" />
         </View>
       ) : error ? (
         <ErrorState message={error} onRetry={load} />
@@ -50,7 +50,7 @@ export default function MyFollowersScreen() {
           ListFooterComponent={
             isLoadingMore ? (
               <View className="items-center py-4">
-                <ActivityIndicator size="small" color="#8B5CF6" />
+                <ActivityIndicator size="small" color="#F53356" />
               </View>
             ) : undefined
           }

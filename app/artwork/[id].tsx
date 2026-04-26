@@ -116,7 +116,7 @@ export default function ArtworkDetailScreen() {
   if (isLoading || !likeReady || isDeleting) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator size="large" color="#8B5CF6" />
+        <ActivityIndicator size="large" color="#F53356" />
       </SafeAreaView>
     );
   }

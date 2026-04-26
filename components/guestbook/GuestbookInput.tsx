@@ -44,7 +44,7 @@ export default function GuestbookInput({
     >
       {replyTo && (
         <View style={{ flexDirection: 'row', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#2A2A2A', backgroundColor: '#262626', paddingHorizontal: 16, paddingVertical: 8 }}>
-          <View style={{ width: 3, height: 16, backgroundColor: '#8B5CF6', borderRadius: 2, marginRight: 8 }} />
+          <View style={{ width: 3, height: 16, backgroundColor: '#F53356', borderRadius: 2, marginRight: 8 }} />
           <Text style={{ flex: 1, fontSize: 13, color: '#A3A3A3' }}>
             {replyTo.nickname}님에게 답글
           </Text>
@@ -92,7 +92,7 @@ export default function GuestbookInput({
             width: 36,
             height: 36,
             borderRadius: 18,
-            backgroundColor: canSend ? '#8B5CF6' : '#262626',
+            backgroundColor: canSend ? '#F53356' : '#262626',
             alignItems: 'center',
             justifyContent: 'center',
           }}

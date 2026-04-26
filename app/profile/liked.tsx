@@ -37,7 +37,7 @@ export default function LikedArtworksScreen() {
 
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#8B5CF6" />
+          <ActivityIndicator size="large" color="#F53356" />
         </View>
       ) : error ? (
         <ErrorState message={error} onRetry={load} />

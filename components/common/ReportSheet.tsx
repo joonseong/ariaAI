@@ -88,7 +88,7 @@ export default function ReportSheet({
           <Text className="mb-4 text-lg font-bold text-text-primary">신고</Text>
 
           {checking ? (
-            <ActivityIndicator color="#8B5CF6" size="small" />
+            <ActivityIndicator color="#F53356" size="small" />
           ) : alreadyReported ? (
             <Text className="py-6 text-center text-sm text-text-secondary">
               이미 신고한 콘텐츠입니다

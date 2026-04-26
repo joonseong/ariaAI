@@ -161,7 +161,7 @@ export default function ProfileScreen(): React.JSX.Element {
         ListEmptyComponent={
           isLoading ? (
             <View className="items-center py-8">
-              <ActivityIndicator size="large" color="#8B5CF6" />
+              <ActivityIndicator size="large" color="#F53356" />
             </View>
           ) : (
             <EmptyState

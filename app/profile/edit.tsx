@@ -97,7 +97,7 @@ export default function ProfileEditScreen(): React.JSX.Element {
             accessibilityLabel="저장"
           >
             {isSubmitting ? (
-              <ActivityIndicator size="small" color="#8B5CF6" />
+              <ActivityIndicator size="small" color="#F53356" />
             ) : (
               <Text
                 className={`text-sm font-semibold ${isDirty ? 'text-accent-primary' : 'text-text-tertiary'}`}
@@ -160,7 +160,7 @@ export default function ProfileEditScreen(): React.JSX.Element {
           {/* Delete Account */}
           <View className="mt-12 items-center">
             {isDeleting ? (
-              <ActivityIndicator size="small" color="#8B5CF6" />
+              <ActivityIndicator size="small" color="#F53356" />
             ) : (
               <Pressable onPress={handleDeleteAccount} accessibilityRole="button">
                 <Text className="text-sm text-text-tertiary underline">회원 탈퇴</Text>

@@ -80,7 +80,7 @@ export default function ArtistPortfolioScreen() {
   if (isLoading) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator size="large" color="#8B5CF6" />
+        <ActivityIndicator size="large" color="#F53356" />
       </SafeAreaView>
     );
   }
@@ -140,7 +140,7 @@ export default function ArtistPortfolioScreen() {
               initialFollowersCount={artist.followersCount}
             />
           ) : (
-            <ActivityIndicator size="small" color="#8B5CF6" />
+            <ActivityIndicator size="small" color="#F53356" />
           )}
         </View>
       </View>

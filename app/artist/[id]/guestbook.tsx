@@ -67,7 +67,7 @@ export default function GuestbookScreen() {
 
       {isLoading ? (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator size="large" color="#8B5CF6" />
+          <ActivityIndicator size="large" color="#F53356" />
         </View>
       ) : (
         <FlatList
@@ -96,7 +96,7 @@ export default function GuestbookScreen() {
           ListFooterComponent={
             isLoadingMore ? (
               <View style={{ alignItems: 'center', paddingVertical: 16 }}>
-                <ActivityIndicator size="small" color="#8B5CF6" />
+                <ActivityIndicator size="small" color="#F53356" />
               </View>
             ) : undefined
           }

@@ -62,7 +62,7 @@ export default function GuestbookMessage({
       {message.replyContent && (
         <View style={{ alignItems: 'flex-end', marginTop: 8 }}>
           <View style={{ maxWidth: '75%' }}>
-            <View style={{ backgroundColor: '#8B5CF6', borderRadius: 16, borderTopRightRadius: 4, paddingHorizontal: 14, paddingVertical: 10 }}>
+            <View style={{ backgroundColor: '#F53356', borderRadius: 16, borderTopRightRadius: 4, paddingHorizontal: 14, paddingVertical: 10 }}>
               <Text style={{ fontSize: 15, color: '#FFFFFF', lineHeight: 21 }}>
                 {message.replyContent}
               </Text>

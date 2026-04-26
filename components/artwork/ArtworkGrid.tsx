@@ -42,7 +42,7 @@ export default function ArtworkGrid({
 
   const footer = isLoadingMore ? (
     <View className="items-center py-4">
-      <ActivityIndicator size="small" color="#8B5CF6" />
+      <ActivityIndicator size="small" color="#F53356" />
     </View>
   ) : undefined;
 

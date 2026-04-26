@@ -14,9 +14,9 @@ describe('COLORS', () => {
   });
 
   it('accent 색상이 DESIGN.md와 일치한다', () => {
-    expect(COLORS.accent.primary).toBe('#8B5CF6');
-    expect(COLORS.accent.primaryHover).toBe('#7C3AED');
-    expect(COLORS.accent.heart).toBe('#EF4444');
+    expect(COLORS.accent.primary).toBe('#F53356');
+    expect(COLORS.accent.primaryHover).toBe('#D42549');
+    expect(COLORS.accent.heart).toBe('#F53356');
   });
 
   it('semantic 색상이 DESIGN.md와 일치한다', () => {

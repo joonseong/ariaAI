@@ -58,8 +58,8 @@ export function LikeButton({
         <IconHeart
           width={iconSize}
           height={iconSize}
-          fill={active ? '#F43F5E' : 'none'}
-          color={active ? '#F43F5E' : '#808080'}
+          fill={active ? '#F53356' : 'none'}
+          color={active ? '#F53356' : '#808080'}
         />
       </Animated.View>
       {count > 0 && (
