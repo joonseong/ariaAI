@@ -5,6 +5,7 @@ import { PROMPT_UNLOCK_COST } from '@/services/points';
 
 export function usePromptUnlock(artworkId: string, artworkAuthorId: string) {
   const user = useAuthStore((state) => state.user);
+  const patchUser = useAuthStore((state) => state.patchUser);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const isOwner = user?.id === artworkAuthorId;
@@ -41,11 +42,13 @@ export function usePromptUnlock(artworkId: string, artworkAuthorId: string) {
 
     if (result.success) {
       setIsUnlocked(true);
-      return { success: true, prompt: result.data };
+      // Sync auth store so balance reflects immediately everywhere
+      patchUser({ pointBalance: result.data.newBalance });
+      return { success: true, prompt: result.data.prompt };
     }
 
     return { success: false, errorMessage: result.error.message };
-  }, [user, isAuthenticated, artworkId]);
+  }, [user, isAuthenticated, artworkId, patchUser]);
 
   return {
     isUnlocked,

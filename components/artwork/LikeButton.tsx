@@ -43,7 +43,7 @@ export function LikeButton({
     onPress();
   };
 
-  const iconSize = size === 'large' ? 24 : 16;
+  const iconSize = size === 'large' ? 28 : 18;
   const countSize = size === 'large' ? 'text-sm' : 'text-xs';
 
   return (

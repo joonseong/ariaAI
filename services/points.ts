@@ -39,7 +39,9 @@ function toPointTransaction(id: string, data: Record<string, unknown>): PointTra
   };
 }
 
-export async function getPointBalance(userId: string): Promise<Result<number>> {
+export async function getPointBalance(
+  userId: string,
+): Promise<Result<{ pointBalance: number; creatorPointBalance: number }>> {
   try {
     const userRef = doc(db, 'users', userId);
     const userSnap = await getDoc(userRef);
@@ -48,8 +50,14 @@ export async function getPointBalance(userId: string): Promise<Result<number>> {
       return { success: false, error: { code: 'not-found', message: '사용자를 찾을 수 없습니다.' } };
     }
 
-    const balance = (userSnap.data().pointBalance as number) ?? 0;
-    return { success: true, data: balance };
+    const data = userSnap.data();
+    return {
+      success: true,
+      data: {
+        pointBalance: (data.pointBalance as number) ?? 0,
+        creatorPointBalance: (data.creatorPointBalance as number) ?? 0,
+      },
+    };
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };
   }

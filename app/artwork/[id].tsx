@@ -174,7 +174,7 @@ export default function ArtworkDetailScreen() {
       <SafeAreaView className="flex-1 bg-background">
         <View className="px-4 py-3">
           <Pressable onPress={handleBack} accessibilityLabel="뒤로가기">
-            <IconBack width={24} height={24} color="#E5E5E5" />
+            <IconBack width={28} height={28} color="#FFFFFF" />
           </Pressable>
         </View>
         <ErrorState
@@ -189,7 +189,7 @@ export default function ArtworkDetailScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={handleBack} accessibilityLabel="뒤로가기">
-          <IconBack width={24} height={24} color="#E5E5E5" />
+          <IconBack width={28} height={28} color="#FFFFFF" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary" numberOfLines={1}>
           작품 상세

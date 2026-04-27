@@ -58,6 +58,7 @@ function toUser(id: string, data: Record<string, unknown>): User {
     artworksCount: data.artworksCount as number,
     bookmarksCount: data.bookmarksCount as number,
     pointBalance: (data.pointBalance as number) ?? 0,
+    creatorPointBalance: (data.creatorPointBalance as number) ?? 0,
     loginProvider: data.loginProvider as 'email' | 'google' | 'apple',
     isDeleted: data.isDeleted as boolean,
     createdAt: (data.createdAt as FirestoreTimestamp).toDate(),

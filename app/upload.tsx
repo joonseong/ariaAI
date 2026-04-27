@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, Pressable, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import IconClose from '@/assets/icons/icon.close.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -78,12 +78,17 @@ export default function UploadScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={handleClose} accessibilityLabel="닫기" hitSlop={8}>
-          <IconClose width={24} height={24} color="#E5E5E5" />
+          <IconClose width={28} height={28} color="#FFFFFF" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary">작품 등록</Text>
         <View style={{ width: 28 }} />
       </View>
 
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={0}
+      >
       <ScrollView
         className="flex-1 px-4"
         keyboardShouldPersistTaps="handled"
@@ -130,11 +135,9 @@ export default function UploadScreen() {
             multiline
             error={errors.prompt}
           />
-          {upload.prompt.trim().length > 0 && (
-            <Text className="mt-1 text-xs text-text-tertiary">
-              프롬프트는 잠금 상태로 저장됩니다. 다른 사용자가 열람하려면 100P가 필요합니다.
-            </Text>
-          )}
+          <Text className="mt-2 text-xs leading-5 text-text-tertiary">
+            다른 유저가 프롬프트를 보기 위해선 100P가 필요합니다. 이 중 70CP는 작가님의 크리에이터 포인트로 저장되며, 10,000CP 이상인 경우 네이버페이로 전환이 가능합니다.
+          </Text>
         </View>
 
         <View className="mt-6">
@@ -200,6 +203,7 @@ export default function UploadScreen() {
           />
         </View>
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {upload.isUploading && (
         <View className="absolute inset-0 items-center justify-center bg-black/50">

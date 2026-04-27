@@ -8,7 +8,6 @@ import { useAuthStore } from '@/stores/authStore';
 import { showToast } from '@/stores/toastStore';
 import { PointPackage } from '@/types/points';
 import { purchasePoints } from '@/services/points';
-import { formatCount } from '@/lib/formatters';
 
 function PackageCard({
   pkg,
@@ -31,7 +30,7 @@ function PackageCard({
       <View>
         <Text className="text-base font-bold text-text-primary">{pkg.name}</Text>
         <View className="mt-1 flex-row items-center gap-2">
-          <Text className="text-lg font-bold text-accent-primary">{formatCount(pkg.points)}P</Text>
+          <Text className="text-lg font-bold text-accent-primary">{pkg.points.toLocaleString()}P</Text>
           {bonusPercent > 0 && (
             <View className="rounded-full bg-accent-primary px-2 py-0.5">
               <Text className="text-xs font-semibold text-white">+{bonusPercent}% 보너스</Text>
@@ -47,7 +46,8 @@ function PackageCard({
 export default function PointsScreen() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const { balance, packages, isLoadingPackages, refreshBalance, loadPackages } = usePoints();
+  const patchUser = useAuthStore((state) => state.patchUser);
+  const { balance, creatorBalance, packages, isLoadingPackages, refreshBalance, loadPackages } = usePoints();
 
   useEffect(() => {
     loadPackages();
@@ -66,7 +66,6 @@ export default function PointsScreen() {
           text: '결제하기',
           onPress: async () => {
             // TODO: 실제 IAP 연동 시 플랫폼 결제 모듈 호출 후 iapTransactionId 획득
-            // 현재는 임시로 직접 포인트 지급 (개발/테스트용)
             Alert.alert(
               '결제 준비 중',
               '인앱 결제(IAP) 연동이 준비되면 이 버튼으로 실제 결제가 진행됩니다.\n\n현재는 테스트 모드로 포인트가 즉시 지급됩니다.',
@@ -84,6 +83,8 @@ export default function PointsScreen() {
                       iapTxId,
                     );
                     if (result.success) {
+                      // Sync auth store immediately so balance shows everywhere
+                      patchUser({ pointBalance: result.data });
                       showToast(`${pkg.points.toLocaleString()}P가 충전되었습니다`, 'success');
                       refreshBalance();
                     } else {
@@ -97,7 +98,7 @@ export default function PointsScreen() {
         },
       ],
     );
-  }, [user, refreshBalance]);
+  }, [user, patchUser, refreshBalance]);
 
   const FALLBACK_PACKAGES: PointPackage[] = [
     { id: 'small', name: '소형', points: 100, price: 100, iapProductId: 'com.aria.points.100', isActive: true, order: 1 },
@@ -111,24 +112,38 @@ export default function PointsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
-        <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기">
-          <IconBack width={24} height={24} color="#E5E5E5" />
+        <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기" hitSlop={8}>
+          <IconBack width={28} height={28} color="#FFFFFF" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary">포인트 충전</Text>
-        <View style={{ width: 24 }} />
+        <View style={{ width: 28 }} />
       </View>
 
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-        <View className="mb-6 mt-2 items-center rounded-2xl bg-surface p-6">
-          <Text className="text-sm text-text-secondary">보유 포인트</Text>
+        {/* P 잔액 */}
+        <View className="mb-3 mt-2 items-center rounded-2xl bg-surface p-6">
+          <Text className="text-sm text-text-secondary">보유 P (열람 포인트)</Text>
           <Text className="mt-1 text-4xl font-bold text-accent-primary">
             {balance.toLocaleString()}P
           </Text>
-          <Text className="mt-1 text-xs text-text-tertiary">1P = 1원</Text>
+          <Text className="mt-1 text-xs text-text-tertiary">프롬프트 열람 시 100P 차감 · 1P = 1원</Text>
         </View>
 
+        {/* CP 잔액 */}
+        {creatorBalance > 0 && (
+          <View className="mb-4 items-center rounded-2xl bg-surface p-4">
+            <Text className="text-sm text-text-secondary">보유 CP (크리에이터 포인트)</Text>
+            <Text className="mt-1 text-2xl font-bold text-text-primary">
+              {creatorBalance.toLocaleString()}CP
+            </Text>
+            <Text className="mt-1 text-xs text-text-tertiary">
+              10,000CP 이상 시 네이버페이로 전환 가능
+            </Text>
+          </View>
+        )}
+
         <View className="mb-2 flex-row items-center justify-between">
-          <Text className="text-sm font-semibold text-text-primary">충전 패키지</Text>
+          <Text className="text-sm font-semibold text-text-primary">P 충전 패키지</Text>
         </View>
 
         {isLoadingPackages ? (
@@ -142,10 +157,13 @@ export default function PointsScreen() {
         <View className="mb-8 mt-6 rounded-xl bg-surface p-4">
           <Text className="mb-2 text-sm font-semibold text-text-primary">포인트 안내</Text>
           <Text className="text-xs leading-5 text-text-secondary">
-            • 1P = 1원이며, 프롬프트 열람에 100P가 필요합니다.{'\n'}
-            • 구매한 포인트는 환불되지 않습니다.{'\n'}
-            • 미사용 포인트는 회원 탈퇴 시 소멸됩니다.{'\n'}
-            • 결제 문의: 고객센터를 통해 문의해주세요.
+            • P(포인트): 프롬프트 열람 등에 사용하는 열람 포인트. 현금으로 구매.{'\n'}
+            • CP(크리에이터 포인트): 내 프롬프트를 다른 유저가 열람할 때 지급되는 수익 포인트.{'\n'}
+            • 1P = 1원이며, 프롬프트 열람 시 100P가 차감됩니다.{'\n'}
+            • 프롬프트 열람 100P 중 70CP가 작가님께 지급됩니다.{'\n'}
+            • CP는 10,000CP 이상 시 네이버페이로 전환 가능합니다.{'\n'}
+            • 구매한 P는 환불되지 않습니다.{'\n'}
+            • 미사용 P는 회원 탈퇴 시 소멸됩니다.
           </Text>
         </View>
       </ScrollView>

@@ -35,6 +35,7 @@ const mockUser: User = {
   artworksCount: 0,
   bookmarksCount: 0,
     pointBalance: 0,
+    creatorPointBalance: 0,
   loginProvider: 'email',
   isDeleted: false,
   createdAt: new Date(),

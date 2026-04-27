@@ -10,6 +10,7 @@ export interface User {
   artworksCount: number;
   bookmarksCount: number;
   pointBalance: number;
+  creatorPointBalance: number;
   loginProvider: 'email' | 'google' | 'apple';
   isDeleted: boolean;
   createdAt: Date;

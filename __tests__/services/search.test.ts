@@ -83,6 +83,7 @@ function makeUserDoc(id: string, overrides?: Record<string, unknown>) {
       artworksCount: 0,
       bookmarksCount: 0,
         pointBalance: 0,
+        creatorPointBalance: 0,
       loginProvider: 'email',
       isDeleted: false,
       createdAt: firestoreTimestamp,

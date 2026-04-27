@@ -4,11 +4,15 @@ import {
   serverTimestamp,
   runTransaction,
   increment,
+  collection,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { mapFirebaseError } from '@/lib/errors';
 import { Result } from '@/types/common';
-import { PROMPT_UNLOCK_COST, spendPoints } from '@/services/points';
+import { PROMPT_UNLOCK_COST } from '@/services/points';
+
+// 100P 중 70CP가 작가에게 지급됨 (나머지 30P는 플랫폼 수수료)
+const CREATOR_REWARD_CP = 70;
 
 export async function checkUnlocked(
   userId: string,
@@ -27,9 +31,8 @@ export async function checkUnlocked(
 export async function unlockPrompt(
   userId: string,
   artworkId: string,
-): Promise<Result<string>> {
+): Promise<Result<{ prompt: string; newBalance: number }>> {
   try {
-    // Verify artwork has a prompt before spending points
     const artworkRef = doc(db, 'artworks', artworkId);
     const artworkSnap = await getDoc(artworkRef);
 
@@ -42,16 +45,19 @@ export async function unlockPrompt(
       return { success: false, error: { code: 'no-prompt', message: '이 작품에는 프롬프트가 없습니다.' } };
     }
 
-    // Check if already unlocked
+    // Already unlocked — return prompt without charging
     const unlockId = `${userId}_${artworkId}`;
     const unlockRef = doc(db, 'promptUnlocks', unlockId);
     const existingUnlock = await getDoc(unlockRef);
     if (existingUnlock.exists()) {
-      return { success: true, data: artworkData.prompt as string };
+      const userSnap = await getDoc(doc(db, 'users', userId));
+      const balance = (userSnap.data()?.pointBalance as number) ?? 0;
+      return { success: true, data: { prompt: artworkData.prompt as string, newBalance: balance } };
     }
 
-    // Spend points and create unlock record atomically
+    const creatorId = artworkData.authorId as string;
     let promptText = '';
+    let newBalance = 0;
 
     await runTransaction(db, async (transaction) => {
       const userRef = doc(db, 'users', userId);
@@ -66,8 +72,11 @@ export async function unlockPrompt(
         throw { code: 'insufficient-points', message: '포인트가 부족합니다.' };
       }
 
-      const txRef = doc(db, 'pointTransactions', `tx_${userId}_${artworkId}_${Date.now()}`);
-      transaction.set(txRef, {
+      newBalance = currentBalance - PROMPT_UNLOCK_COST;
+
+      // 열람 사용자: P 차감 + pointTransactions 기록
+      const ptxRef = doc(collection(db, 'pointTransactions'));
+      transaction.set(ptxRef, {
         userId,
         type: 'spend',
         amount: PROMPT_UNLOCK_COST,
@@ -77,11 +86,27 @@ export async function unlockPrompt(
         iapTransactionId: null,
         createdAt: serverTimestamp(),
       });
-
       transaction.update(userRef, {
         pointBalance: increment(-PROMPT_UNLOCK_COST),
       });
 
+      // 작가: CP 지급 + creatorPointTransactions 기록
+      const creatorRef = doc(db, 'users', creatorId);
+      const ctxRef = doc(collection(db, 'creatorPointTransactions'));
+      transaction.set(ctxRef, {
+        creatorId,
+        type: 'earn',
+        amount: CREATOR_REWARD_CP,
+        reason: 'prompt_view',
+        artworkId,
+        viewerUserId: userId,
+        createdAt: serverTimestamp(),
+      });
+      transaction.update(creatorRef, {
+        creatorPointBalance: increment(CREATOR_REWARD_CP),
+      });
+
+      // 잠금 해제 기록
       transaction.set(unlockRef, {
         userId,
         artworkId,
@@ -92,8 +117,10 @@ export async function unlockPrompt(
       promptText = artworkData.prompt as string;
     });
 
-    return { success: true, data: promptText };
+    return { success: true, data: { prompt: promptText, newBalance } };
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };
   }
 }
+
+export { CREATOR_REWARD_CP };

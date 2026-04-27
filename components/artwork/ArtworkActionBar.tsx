@@ -41,7 +41,7 @@ export function ArtworkActionBar({
         accessibilityLabel="공유"
         accessibilityRole="button"
       >
-        <IconShare width={22} height={22} color="#A0A0A0" />
+        <IconShare width={26} height={26} color="#FFFFFF" />
       </Pressable>
 
       <View className="flex-1" />
@@ -52,7 +52,7 @@ export function ArtworkActionBar({
         accessibilityLabel="더보기"
         accessibilityRole="button"
       >
-        <IconMore width={22} height={22} color="#A0A0A0" />
+        <IconMore width={26} height={26} color="#FFFFFF" />
       </Pressable>
     </View>
   );

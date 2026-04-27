@@ -5,7 +5,9 @@ import { PointPackage } from '@/types/points';
 
 export function usePoints() {
   const user = useAuthStore((state) => state.user);
+  const patchUser = useAuthStore((state) => state.patchUser);
   const [balance, setBalance] = useState(user?.pointBalance ?? 0);
+  const [creatorBalance, setCreatorBalance] = useState(user?.creatorPointBalance ?? 0);
   const [packages, setPackages] = useState<PointPackage[]>([]);
   const [isLoadingPackages, setIsLoadingPackages] = useState(false);
 
@@ -13,9 +15,14 @@ export function usePoints() {
     if (!user) return;
     const result = await getPointBalance(user.id);
     if (result.success) {
-      setBalance(result.data);
+      setBalance(result.data.pointBalance);
+      setCreatorBalance(result.data.creatorPointBalance);
+      patchUser({
+        pointBalance: result.data.pointBalance,
+        creatorPointBalance: result.data.creatorPointBalance,
+      });
     }
-  }, [user]);
+  }, [user, patchUser]);
 
   const loadPackages = useCallback(async () => {
     setIsLoadingPackages(true);
@@ -29,11 +36,13 @@ export function usePoints() {
   useEffect(() => {
     if (user) {
       setBalance(user.pointBalance ?? 0);
+      setCreatorBalance(user.creatorPointBalance ?? 0);
     }
   }, [user]);
 
   return {
     balance,
+    creatorBalance,
     packages,
     isLoadingPackages,
     refreshBalance,
