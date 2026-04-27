@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useArtistProfile } from '@/hooks/useArtistProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { usePoints } from '@/hooks/usePoints';
+import IconMore from '@/assets/icons/icon.more.svg';
 import { Avatar } from '@/components/common/Avatar';
 import { Button } from '@/components/common/Button';
 import ArtworkGrid from '@/components/artwork/ArtworkGrid';
@@ -48,16 +49,19 @@ export default function ProfileScreen(): React.JSX.Element {
     if (user?.id) load();
   }, [user?.id, load]);
 
-  const handleLogout = useCallback(() => {
-    Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
-      { text: '취소', style: 'cancel' },
+  const handleMoreMenu = useCallback(() => {
+    Alert.alert('', '', [
       {
         text: '로그아웃',
         style: 'destructive',
         onPress: async () => {
-          await logout();
+          Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
+            { text: '취소', style: 'cancel' },
+            { text: '로그아웃', style: 'destructive', onPress: async () => { await logout(); } },
+          ]);
         },
       },
+      { text: '취소', style: 'cancel' },
     ]);
   }, [logout]);
 
@@ -90,7 +94,24 @@ export default function ProfileScreen(): React.JSX.Element {
 
   const profileHeader = (
     <View>
-      <View className="items-center px-6 pb-4 pt-6">
+      {/* 상단 헤더 */}
+      <View className="flex-row items-center justify-between px-4 py-3">
+        <Pressable
+          onPress={() => router.push('/profile/points')}
+          className="flex-row items-center gap-1"
+          accessibilityLabel="포인트 충전"
+        >
+          <Text className="text-base font-semibold text-accent-primary">
+            {balance.toLocaleString()}P
+          </Text>
+        </Pressable>
+        <Pressable onPress={handleMoreMenu} hitSlop={8} accessibilityLabel="더보기">
+          <IconMore width={26} height={26} color="#FFFFFF" />
+        </Pressable>
+      </View>
+
+      {/* 프로필 정보 */}
+      <View className="items-center px-6 pb-4 pt-2">
         <Avatar uri={user.profileImageUrl} size={80} fallbackText={user.nickname} />
         <Text className="mt-3 text-xl font-bold text-text-primary">{user.nickname}</Text>
         {user.bio.length > 0 && (
@@ -144,6 +165,7 @@ export default function ProfileScreen(): React.JSX.Element {
         </View>
       </View>
 
+      {/* 메뉴 */}
       <View className="border-t border-border">
         <Pressable
           onPress={() => router.push('/profile/points')}
@@ -157,9 +179,6 @@ export default function ProfileScreen(): React.JSX.Element {
           </View>
         </Pressable>
         <MenuItem label="좋아요한 작품" onPress={() => router.push('/profile/liked')} />
-        <MenuItem label="팔로워" onPress={() => router.push('/profile/followers')} />
-        <MenuItem label="팔로잉" onPress={() => router.push('/profile/following')} />
-        <MenuItem label="로그아웃" onPress={handleLogout} destructive />
       </View>
 
       <View className="mt-4 border-t border-border px-4 py-3">

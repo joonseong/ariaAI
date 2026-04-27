@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, FlatList, Alert, ActivityIndicator } from 'react-native';
+import IconBack from '@/assets/icons/icon.back.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGuestbook } from '@/hooks/useGuestbook';
@@ -60,7 +61,7 @@ export default function GuestbookScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }} edges={['top']}>
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#2A2A2A' }}>
         <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기">
-          <Text style={{ fontSize: 22, color: '#F5F5F5' }}>{'\u2190'}</Text>
+          <IconBack width={28} height={28} color="#FFFFFF" />
         </Pressable>
         <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: '#F5F5F5' }}>방명록</Text>
       </View>
