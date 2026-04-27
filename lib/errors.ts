@@ -49,7 +49,7 @@ export function mapFirebaseError(error: unknown): AppError {
   }
 
   if (error instanceof Error) {
-    return { code: 'unknown', message: error.message || DEFAULT_MESSAGE };
+    return { code: 'unknown', message: DEFAULT_MESSAGE };
   }
 
   return { code: 'unknown', message: DEFAULT_MESSAGE };

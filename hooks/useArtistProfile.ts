@@ -16,6 +16,8 @@ export function useArtistProfile(artistId: string) {
   const load = useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    setArtist(null);
+    setArtworks([]);
     artworkCursorRef.current = undefined;
     setHasMoreArtworks(true);
 

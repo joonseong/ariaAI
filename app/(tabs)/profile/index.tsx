@@ -126,13 +126,22 @@ export default function ProfileScreen(): React.JSX.Element {
             <Text className="text-xs text-text-secondary">팔로잉</Text>
           </Pressable>
         </View>
-        <Pressable
-          onPress={() => router.push('/profile/edit')}
-          className="mt-4 h-9 items-center justify-center rounded-lg border border-border px-6"
-          accessibilityLabel="프로필 수정"
-        >
-          <Text className="text-sm font-medium text-text-secondary">프로필 수정</Text>
-        </Pressable>
+        <View className="mt-4 flex-row items-center gap-3">
+          <Pressable
+            onPress={() => router.push('/profile/edit')}
+            className="h-9 items-center justify-center rounded-lg border border-border px-4"
+            accessibilityLabel="프로필 수정"
+          >
+            <Text className="text-sm font-medium text-text-secondary">프로필 수정</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => router.push(`/artist/${user.id}/guestbook`)}
+            className="h-9 items-center justify-center rounded-lg border border-border px-4"
+            accessibilityLabel="방명록 보기"
+          >
+            <Text className="text-sm font-medium text-text-secondary">방명록</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View className="border-t border-border">
@@ -148,7 +157,6 @@ export default function ProfileScreen(): React.JSX.Element {
           </View>
         </Pressable>
         <MenuItem label="좋아요한 작품" onPress={() => router.push('/profile/liked')} />
-        <MenuItem label="저장한 작품" onPress={() => router.push('/profile/saved')} />
         <MenuItem label="팔로워" onPress={() => router.push('/profile/followers')} />
         <MenuItem label="팔로잉" onPress={() => router.push('/profile/following')} />
         <MenuItem label="로그아웃" onPress={handleLogout} destructive />

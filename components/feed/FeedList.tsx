@@ -18,10 +18,6 @@ interface FeedListProps {
   onRetry: () => void;
   onArtworkPress: (artwork: Artwork) => void;
   onArtistPress: (userId: string) => void;
-  onLikePress: (artworkId: string) => void;
-  likedArtworkIds: Set<string>;
-  bookmarkedArtworkIds?: Set<string>;
-  isAuthenticated: boolean;
   onEmptyAction?: () => void;
   emptyActionLabel?: string;
 }
@@ -40,10 +36,6 @@ export const FeedList = forwardRef<FlatList<Artwork>, FeedListProps>(function Fe
   onRetry,
   onArtworkPress,
   onArtistPress,
-  onLikePress,
-  likedArtworkIds,
-  bookmarkedArtworkIds,
-  isAuthenticated,
   onEmptyAction,
   emptyActionLabel,
 }: FeedListProps, ref) {
@@ -59,15 +51,11 @@ export const FeedList = forwardRef<FlatList<Artwork>, FeedListProps>(function Fe
         <ArtworkCard
           artwork={item}
           onPress={() => onArtworkPress(item)}
-          onLikePress={() => onLikePress(item.id)}
           onArtistPress={() => onArtistPress(item.authorId)}
-          liked={likedArtworkIds.has(item.id)}
-          initialBookmarked={bookmarkedArtworkIds?.has(item.id) ?? false}
-          isAuthenticated={isAuthenticated}
         />
       </View>
     ),
-    [onArtworkPress, onLikePress, onArtistPress, likedArtworkIds, bookmarkedArtworkIds, isAuthenticated],
+    [onArtworkPress, onArtistPress],
   );
 
   const keyExtractor = useCallback((item: Artwork) => item.id, []);

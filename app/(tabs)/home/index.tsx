@@ -1,17 +1,15 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React, { useEffect, useCallback, useRef } from 'react';
+import { View, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useScrollToTop } from '@react-navigation/native';
 import { useArtworks } from '@/hooks/useArtworks';
-import { useAuthStore } from '@/stores/authStore';
 import { FeedList } from '@/components/feed/FeedList';
-import { LoginPromptSheet } from '@/components/common/LoginPromptSheet';
 import { Artwork } from '@/types/artwork';
+import BrandLogo from '@/assets/icon.logo.brand.svg';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const {
     artworks,
     isLoading,
@@ -24,8 +22,6 @@ export default function HomeScreen() {
     refresh,
   } = useArtworks();
 
-  const [loginPromptVisible, setLoginPromptVisible] = useState(false);
-  const likedArtworkIds = useMemo(() => new Set<string>(), []);
   const feedListRef = useRef<FlatList<Artwork>>(null);
   useScrollToTop(feedListRef);
 
@@ -47,23 +43,10 @@ export default function HomeScreen() {
     [router],
   );
 
-  const handleLikePress = useCallback(
-    (_artworkId: string) => {
-      if (!isAuthenticated) {
-        setLoginPromptVisible(true);
-      }
-    },
-    [isAuthenticated],
-  );
-
-  const handleCloseLoginPrompt = useCallback(() => {
-    setLoginPromptVisible(false);
-  }, []);
-
   return (
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="px-4 py-3">
-        <Text className="text-2xl font-bold text-text-primary">Aria</Text>
+        <BrandLogo width={80} height={36} />
       </View>
 
       <FeedList
@@ -79,17 +62,8 @@ export default function HomeScreen() {
         onRetry={loadFeed}
         onArtworkPress={handleArtworkPress}
         onArtistPress={handleArtistPress}
-        onLikePress={handleLikePress}
-        likedArtworkIds={likedArtworkIds}
-        isAuthenticated={isAuthenticated}
         onEmptyAction={() => router.push('/search')}
         emptyActionLabel="작가 찾아보기"
-      />
-
-      <LoginPromptSheet
-        visible={loginPromptVisible}
-        onClose={handleCloseLoginPrompt}
-        message="좋아요를 누르려면 로그인이 필요합니다"
       />
     </SafeAreaView>
   );

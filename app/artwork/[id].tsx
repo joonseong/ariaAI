@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, Share, Alert, ActivityIndicator } from 'react-native';
+import * as ClipboardModule from 'expo-clipboard';
 import IconBack from '@/assets/icons/icon.back.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -243,6 +244,19 @@ export default function ArtworkDetailScreen() {
                 <ActivityIndicator size="small" color="#F53356" />
               ) : (isUnlocked || isOwner) ? (
                 <View className="rounded-xl bg-surface p-4">
+                  <View className="mb-2 flex-row items-center justify-end">
+                    <Pressable
+                      onPress={() => {
+                        const text = unlockedPrompt ?? artwork.prompt ?? '';
+                        ClipboardModule.setStringAsync(text);
+                        showToast('프롬프트가 복사되었습니다', 'success');
+                      }}
+                      hitSlop={8}
+                      accessibilityLabel="프롬프트 복사"
+                    >
+                      <Text className="text-xs font-medium text-accent-primary">복사</Text>
+                    </Pressable>
+                  </View>
                   <Text className="text-sm leading-5 text-text-secondary" selectable>
                     {unlockedPrompt ?? artwork.prompt}
                   </Text>
