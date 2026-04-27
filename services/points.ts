@@ -8,11 +8,7 @@ import {
   collection,
   query,
   where,
-  orderBy,
   limit as firestoreLimit,
-  startAfter,
-  Timestamp,
-  type QueryConstraint,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { mapFirebaseError } from '@/lib/errors';
@@ -170,24 +166,22 @@ export async function purchasePoints(
 
 export async function getTransactionHistory(
   userId: string,
-  cursor?: Date,
+  _cursor?: Date,
   limit?: number,
 ): Promise<Result<PaginatedResult<PointTransaction>>> {
   try {
     const pageSize = limit ?? 20;
-    const constraints: QueryConstraint[] = [
+    // Use only equality filter to avoid composite index requirement; sort client-side
+    const q = query(
+      collection(db, 'pointTransactions'),
       where('userId', '==', userId),
-      orderBy('createdAt', 'desc'),
-    ];
-
-    if (cursor) {
-      constraints.push(startAfter(Timestamp.fromDate(cursor)));
-    }
-    constraints.push(firestoreLimit(pageSize));
-
-    const q = query(collection(db, 'pointTransactions'), ...constraints);
+      firestoreLimit(pageSize * 2),
+    );
     const snapshot = await getDocs(q);
-    const items = snapshot.docs.map((d) => toPointTransaction(d.id, d.data()));
+    const items = snapshot.docs
+      .map((d) => toPointTransaction(d.id, d.data()))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, pageSize);
     const lastItem = items[items.length - 1] ?? null;
 
     return {
@@ -205,16 +199,12 @@ export async function getTransactionHistory(
 
 export async function getPointPackages(): Promise<Result<PointPackage[]>> {
   try {
-    const q = query(
-      collection(db, 'pointPackages'),
-      where('isActive', '==', true),
-      orderBy('order', 'asc'),
-    );
-    const snapshot = await getDocs(q);
-    const packages = snapshot.docs.map((d) => ({
-      id: d.id,
-      ...(d.data() as Omit<PointPackage, 'id'>),
-    }));
+    // Fetch all packages and filter/sort client-side to avoid composite index requirement
+    const snapshot = await getDocs(collection(db, 'pointPackages'));
+    const packages = snapshot.docs
+      .map((d) => ({ id: d.id, ...(d.data() as Omit<PointPackage, 'id'>) }))
+      .filter((p) => p.isActive)
+      .sort((a, b) => a.order - b.order);
     return { success: true, data: packages };
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };

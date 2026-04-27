@@ -254,8 +254,8 @@ function ImageSelector({
               accessibilityLabel="이미지 추가"
               accessibilityRole="button"
             >
-              <Text className="text-2xl text-text-tertiary">+</Text>
-              <Text className="mt-1 text-xs text-text-tertiary">추가</Text>
+              <Text className="text-2xl text-white">+</Text>
+              <Text className="mt-1 text-xs text-white">추가</Text>
             </Pressable>
           )}
           {images.map((image, index) => (

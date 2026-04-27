@@ -43,7 +43,7 @@ export function LikeButton({
     onPress();
   };
 
-  const iconSize = size === 'large' ? 28 : 18;
+  const iconSize = size === 'large' ? 28 : 22;
   const countSize = size === 'large' ? 'text-sm' : 'text-xs';
 
   return (
@@ -59,7 +59,7 @@ export function LikeButton({
           width={iconSize}
           height={iconSize}
           fill={active ? '#F53356' : 'none'}
-          color={active ? '#F53356' : '#808080'}
+          color={active ? '#F53356' : '#FFFFFF'}
         />
       </Animated.View>
       {count > 0 && (

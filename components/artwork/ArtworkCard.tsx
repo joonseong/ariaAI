@@ -43,7 +43,7 @@ export const ArtworkCard = React.memo(function ArtworkCard({
       >
         <Image
           source={{ uri: artwork.thumbnailUrl }}
-          style={{ width: '100%', aspectRatio: 4 / 3 }}
+          style={{ width: '100%', aspectRatio: 1 }}
           contentFit="cover"
           transition={200}
           placeholder={{ blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4' }}
@@ -85,7 +85,7 @@ export const ArtworkCard = React.memo(function ArtworkCard({
             />
           </View>
 
-          <Text className="mt-1 text-xs text-text-tertiary">
+          <Text className="mt-3 text-xs text-text-tertiary">
             {formatRelativeTime(artwork.createdAt)}
           </Text>
         </View>
