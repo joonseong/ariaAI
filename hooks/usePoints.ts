@@ -6,23 +6,29 @@ import { PointPackage } from '@/types/points';
 export function usePoints() {
   const user = useAuthStore((state) => state.user);
   const patchUser = useAuthStore((state) => state.patchUser);
+  const userId = user?.id;
+
   const [balance, setBalance] = useState(user?.pointBalance ?? 0);
   const [creatorBalance, setCreatorBalance] = useState(user?.creatorPointBalance ?? 0);
   const [packages, setPackages] = useState<PointPackage[]>([]);
   const [isLoadingPackages, setIsLoadingPackages] = useState(false);
 
+  // Depend only on userId (string) — not the full user object.
+  // This prevents an infinite loop: patchUser → new user ref → refreshBalance recreated → effect fires again.
   const refreshBalance = useCallback(async () => {
-    if (!user) return;
-    const result = await getPointBalance(user.id);
+    if (!userId) return;
+    const result = await getPointBalance(userId);
     if (result.success) {
       setBalance(result.data.pointBalance);
       setCreatorBalance(result.data.creatorPointBalance);
+      // Sync auth store so balance shows correctly in other screens
       patchUser({
         pointBalance: result.data.pointBalance,
         creatorPointBalance: result.data.creatorPointBalance,
       });
     }
-  }, [user, patchUser]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]); // patchUser is a stable Zustand action — omitting it is safe
 
   const loadPackages = useCallback(async () => {
     setIsLoadingPackages(true);
@@ -33,12 +39,13 @@ export function usePoints() {
     setIsLoadingPackages(false);
   }, []);
 
+  // Sync local state when auth store user changes (e.g. after login)
   useEffect(() => {
     if (user) {
       setBalance(user.pointBalance ?? 0);
       setCreatorBalance(user.creatorPointBalance ?? 0);
     }
-  }, [user]);
+  }, [user?.pointBalance, user?.creatorPointBalance]);
 
   return {
     balance,

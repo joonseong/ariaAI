@@ -52,7 +52,8 @@ export default function PointsScreen() {
   useEffect(() => {
     loadPackages();
     refreshBalance();
-  }, [loadPackages, refreshBalance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount only
 
   const handlePurchase = useCallback((pkg: PointPackage) => {
     if (!user) return;
