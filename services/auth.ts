@@ -5,16 +5,9 @@ import {
   sendPasswordResetEmail,
   deleteUser,
   onAuthStateChanged,
-  signInWithCredential,
-  signInWithCustomToken,
-  OAuthProvider,
   type User as FirebaseUser,
   type Unsubscribe,
 } from 'firebase/auth';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import * as Crypto from 'expo-crypto';
-import { login as kakaoLogin } from '@react-native-kakao/user';
 import {
   doc,
   getDoc,
@@ -27,11 +20,6 @@ import { auth, db } from '@/lib/firebase';
 import { mapFirebaseError } from '@/lib/errors';
 import { Result } from '@/types/common';
 import { User, SignUpInput } from '@/types/user';
-
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-});
 
 interface FirestoreTimestamp {
   toDate: () => Date;
@@ -261,28 +249,27 @@ export async function signInWithEmail(
 
 export async function signInWithGoogle(): Promise<Result<User>> {
   try {
+    const { GoogleSignin, statusCodes } = await import('@react-native-google-signin/google-signin');
+    const { GoogleAuthProvider, signInWithCredential: fbSignInWithCredential } = await import('firebase/auth');
+
+    GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    });
+
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     const signInResult = await GoogleSignin.signIn();
     const idToken = signInResult.data?.idToken;
     if (!idToken) {
       return { success: false, error: { code: 'auth/google-no-token', message: 'Google 로그인에 실패했습니다.' } };
     }
-    const { GoogleAuthProvider } = await import('firebase/auth');
+
     const credential = GoogleAuthProvider.credential(idToken);
-    const userCredential = await signInWithCredential(auth, credential);
-    const firebaseUser = userCredential.user;
-    return getOrCreateSocialUser(
-      firebaseUser,
-      'google',
-      firebaseUser.displayName,
-      firebaseUser.email,
-    );
+    const userCredential = await fbSignInWithCredential(auth, credential);
+    return getOrCreateSocialUser(userCredential.user, 'google', userCredential.user.displayName, userCredential.user.email);
   } catch (error: unknown) {
-    if (
-      error != null &&
-      typeof error === 'object' &&
-      'code' in error
-    ) {
+    if (error != null && typeof error === 'object' && 'code' in error) {
+      const { statusCodes } = await import('@react-native-google-signin/google-signin').catch(() => ({ statusCodes: {} as Record<string, string> }));
       const code = (error as { code: string }).code;
       if (code === statusCodes.SIGN_IN_CANCELLED) {
         return { success: false, error: { code: 'auth/cancelled', message: '로그인이 취소되었습니다.' } };
@@ -297,6 +284,10 @@ export async function signInWithGoogle(): Promise<Result<User>> {
 
 export async function signInWithApple(): Promise<Result<User>> {
   try {
+    const AppleAuthentication = await import('expo-apple-authentication');
+    const Crypto = await import('expo-crypto');
+    const { OAuthProvider, signInWithCredential: fbSignInWithCredential } = await import('firebase/auth');
+
     const nonce = Crypto.randomUUID();
     const hashedNonce = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,
@@ -317,28 +308,22 @@ export async function signInWithApple(): Promise<Result<User>> {
     }
 
     const provider = new OAuthProvider('apple.com');
-    const oauthCredential = provider.credential({
-      idToken: identityToken,
-      rawNonce: nonce,
-    });
-    const userCredential = await signInWithCredential(auth, oauthCredential);
-    const firebaseUser = userCredential.user;
+    const oauthCredential = provider.credential({ idToken: identityToken, rawNonce: nonce });
+    const userCredential = await fbSignInWithCredential(auth, oauthCredential);
 
     const displayName = credential.fullName
       ? [credential.fullName.givenName, credential.fullName.familyName].filter(Boolean).join(' ')
       : null;
 
     return getOrCreateSocialUser(
-      firebaseUser,
+      userCredential.user,
       'apple',
-      displayName || firebaseUser.displayName,
-      credential.email || firebaseUser.email,
+      displayName || userCredential.user.displayName,
+      credential.email || userCredential.user.email,
     );
   } catch (error: unknown) {
     if (
-      error != null &&
-      typeof error === 'object' &&
-      'code' in error &&
+      error != null && typeof error === 'object' && 'code' in error &&
       (error as { code: string }).code === 'ERR_REQUEST_CANCELED'
     ) {
       return { success: false, error: { code: 'auth/cancelled', message: '로그인이 취소되었습니다.' } };
@@ -349,12 +334,14 @@ export async function signInWithApple(): Promise<Result<User>> {
 
 export async function signInWithKakao(): Promise<Result<User>> {
   try {
+    const { login: kakaoLogin } = await import('@react-native-kakao/user');
+    const { signInWithCustomToken: fbSignInWithCustomToken } = await import('firebase/auth');
+
     const kakaoToken = await kakaoLogin();
     if (!kakaoToken.accessToken) {
       return { success: false, error: { code: 'auth/kakao-no-token', message: '카카오 로그인에 실패했습니다.' } };
     }
 
-    // Exchange Kakao access token for Firebase custom token via Cloud Function
     const cfUrl = process.env.EXPO_PUBLIC_KAKAO_FIREBASE_CF_URL;
     if (!cfUrl) {
       return {
@@ -373,14 +360,13 @@ export async function signInWithKakao(): Promise<Result<User>> {
       return { success: false, error: { code: 'auth/kakao-cf-error', message: '카카오 로그인에 실패했습니다.' } };
     }
 
-    const { firebaseToken, uid, nickname, email } = await response.json() as {
+    const { firebaseToken, nickname, email } = await response.json() as {
       firebaseToken: string;
-      uid: string;
       nickname?: string;
       email?: string;
     };
 
-    const userCredential = await signInWithCustomToken(auth, firebaseToken);
+    const userCredential = await fbSignInWithCustomToken(auth, firebaseToken);
     return getOrCreateSocialUser(userCredential.user, 'kakao', nickname ?? null, email ?? null);
   } catch (error) {
     return { success: false, error: mapFirebaseError(error) };

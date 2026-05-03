@@ -1,9 +1,11 @@
 import { initializeApp } from 'firebase/app';
-import {
-  initializeAuth,
-  connectAuthEmulator,
-  type Persistence,
-} from 'firebase/auth';
+import { initializeAuth, connectAuthEmulator } from 'firebase/auth';
+// @firebase/auth exposes getReactNativePersistence under the "react-native" export
+// condition (dist/rn/index.js). TypeScript resolves "types" condition first in the
+// exports map and uses the browser type declarations, so we suppress the error.
+// Metro correctly resolves the react-native bundle at runtime.
+// @ts-expect-error – react-native condition exports this; TS sees browser types
+import { getReactNativePersistence } from '@firebase/auth';
 import {
   initializeFirestore,
   persistentLocalCache,
@@ -11,19 +13,6 @@ import {
 } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// Metro(React Native bundler) resolves the "react-native" export condition at
-// runtime, making getReactNativePersistence available from "firebase/auth".
-// TypeScript, however, picks the top-level "types" condition (browser-only)
-// where this symbol does not exist. The require + cast below keeps the runtime
-// behavior correct while satisfying the type checker.
-const { getReactNativePersistence } =
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('firebase/auth') as {
-    getReactNativePersistence: (
-      storage: typeof AsyncStorage,
-    ) => Persistence;
-  };
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
