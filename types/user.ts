@@ -11,7 +11,7 @@ export interface User {
   bookmarksCount: number;
   pointBalance: number;
   creatorPointBalance: number;
-  loginProvider: 'email' | 'google' | 'apple';
+  loginProvider: 'email' | 'google' | 'apple' | 'kakao';
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;

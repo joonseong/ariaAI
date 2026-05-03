@@ -6,25 +6,30 @@ import {
   Platform,
   ScrollView,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useAuth } from '@/hooks/useAuth';
 import { isValidEmail } from '@/lib/validators';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { showToast } from '@/stores/toastStore';
 import BrandLogo from '@/assets/icon.logo.brand.svg';
+import IconKakao from '@/assets/icons/icon.kakao.svg';
+import IconGoogle from '@/assets/icons/icon.google.svg';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle, signInWithApple, signInWithKakao } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | 'kakao' | null>(null);
 
   const validate = useCallback((): boolean => {
     let valid = true;
@@ -72,6 +77,21 @@ export default function LoginScreen() {
       }
     }
   }, [email, password, signIn, validate]);
+
+  const handleSocialLogin = useCallback(async (provider: 'google' | 'apple' | 'kakao') => {
+    setSocialLoading(provider);
+    let result;
+    if (provider === 'google') result = await signInWithGoogle();
+    else if (provider === 'apple') result = await signInWithApple();
+    else result = await signInWithKakao();
+    setSocialLoading(null);
+
+    if (result.success) {
+      router.replace('/(tabs)/home');
+    } else if (result.error.code !== 'auth/cancelled') {
+      showToast(result.error.message, 'error');
+    }
+  }, [signInWithGoogle, signInWithApple, signInWithKakao, router]);
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -133,6 +153,54 @@ export default function LoginScreen() {
             loading={loading}
             fullWidth
           />
+
+          {/* SNS 로그인 */}
+          <View className="my-6 flex-row items-center gap-3">
+            <View className="h-px flex-1 bg-border" />
+            <Text className="text-xs text-text-tertiary">또는</Text>
+            <View className="h-px flex-1 bg-border" />
+          </View>
+
+          <View className="flex-row justify-center gap-4">
+            {/* 카카오 */}
+            <Pressable
+              onPress={() => handleSocialLogin('kakao')}
+              disabled={socialLoading !== null}
+              className="h-14 w-14 items-center justify-center rounded-full bg-[#FEE500]"
+              accessibilityLabel="카카오로 로그인"
+            >
+              {socialLoading === 'kakao' ? (
+                <ActivityIndicator size="small" color="#3C1E1E" />
+              ) : (
+                <IconKakao width={24} height={24} />
+              )}
+            </Pressable>
+
+            {/* 구글 */}
+            <Pressable
+              onPress={() => handleSocialLogin('google')}
+              disabled={socialLoading !== null}
+              className="h-14 w-14 items-center justify-center rounded-full bg-elevated"
+              accessibilityLabel="구글로 로그인"
+            >
+              {socialLoading === 'google' ? (
+                <ActivityIndicator size="small" color="#F5F5F5" />
+              ) : (
+                <IconGoogle width={24} height={24} />
+              )}
+            </Pressable>
+
+            {/* 애플 — iOS 전용 */}
+            {Platform.OS === 'ios' && (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.WHITE}
+                cornerRadius={28}
+                style={{ width: 56, height: 56 }}
+                onPress={() => handleSocialLogin('apple')}
+              />
+            )}
+          </View>
 
           <View className="mt-8 flex-row justify-center">
             <Text className="text-sm text-text-secondary">
