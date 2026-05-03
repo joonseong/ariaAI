@@ -15,7 +15,8 @@
     },
     "platforms": ["ios", "android"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.minimal.aria"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,7 +39,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.googleusercontent.apps.REPLACE_WITH_IOS_CLIENT_ID"
+          "iosUrlScheme": "com.googleusercontent.apps.1082441690200-cjt36idav5cbmgb1i0e438rdl4oq3fdo"
         }
       ],
       "expo-apple-authentication",
