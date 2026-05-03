@@ -166,7 +166,7 @@ export default function LoginScreen() {
             <Pressable
               onPress={() => handleSocialLogin('kakao')}
               disabled={socialLoading !== null}
-              className="h-14 w-14 items-center justify-center rounded-full bg-[#FEE500]"
+              style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#FEE500', alignItems: 'center', justifyContent: 'center' }}
               accessibilityLabel="카카오로 로그인"
             >
               {socialLoading === 'kakao' ? (
@@ -180,7 +180,7 @@ export default function LoginScreen() {
             <Pressable
               onPress={() => handleSocialLogin('google')}
               disabled={socialLoading !== null}
-              className="h-14 w-14 items-center justify-center rounded-full bg-elevated"
+              style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#262626', alignItems: 'center', justifyContent: 'center' }}
               accessibilityLabel="구글로 로그인"
             >
               {socialLoading === 'google' ? (
