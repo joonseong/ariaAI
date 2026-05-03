@@ -16,7 +16,8 @@
     "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.minimal.aria"
+      "bundleIdentifier": "com.minimal.aria",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
