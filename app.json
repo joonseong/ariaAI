@@ -45,7 +45,7 @@
       [
         "@react-native-kakao/core",
         {
-          "nativeAppKey": "REPLACE_WITH_KAKAO_NATIVE_APP_KEY"
+          "nativeAppKey": "2f6211743e4b1607294adc9b735e141f"
         }
       ]
     ]
