@@ -106,7 +106,7 @@ export default function ProfileScreen(): React.JSX.Element {
           </Text>
         </Pressable>
         <Pressable onPress={handleMoreMenu} hitSlop={8} accessibilityLabel="더보기">
-          <IconMore width={26} height={26} color="#FFFFFF" />
+          <IconMore width={26} height={26} color="#0D0D0D" />
         </Pressable>
       </View>
 
@@ -147,21 +147,23 @@ export default function ProfileScreen(): React.JSX.Element {
             <Text className="text-xs text-text-secondary">팔로잉</Text>
           </Pressable>
         </View>
-        <View className="mt-4 flex-row items-center gap-3">
-          <Pressable
+      </View>
+
+      <View className="flex-row gap-3 px-6 pb-4">
+        <View className="flex-1">
+          <Button
+            title="프로필 수정"
             onPress={() => router.push('/profile/edit')}
-            className="h-9 items-center justify-center rounded-lg border border-border px-4"
-            accessibilityLabel="프로필 수정"
-          >
-            <Text className="text-sm font-medium text-text-secondary">프로필 수정</Text>
-          </Pressable>
-          <Pressable
+            variant="secondary"
+            fullWidth
+          />
+        </View>
+        <View className="flex-1">
+          <Button
+            title="방명록"
             onPress={() => router.push(`/artist/${user.id}/guestbook`)}
-            className="h-9 items-center justify-center rounded-lg border border-border px-4"
-            accessibilityLabel="방명록 보기"
-          >
-            <Text className="text-sm font-medium text-text-secondary">방명록</Text>
-          </Pressable>
+            fullWidth
+          />
         </View>
       </View>
 
@@ -181,7 +183,7 @@ export default function ProfileScreen(): React.JSX.Element {
         <MenuItem label="좋아요한 작품" onPress={() => router.push('/profile/liked')} />
       </View>
 
-      <View className="mt-4 border-t border-border px-4 py-3">
+      <View className="mt-4 px-4 py-3">
         <View className="flex-row items-center justify-between">
           <Text className="text-base font-bold text-text-primary">내 작품</Text>
           <Text className="text-xs text-text-tertiary">{artworks.length}개</Text>

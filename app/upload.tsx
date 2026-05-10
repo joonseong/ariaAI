@@ -78,7 +78,7 @@ export default function UploadScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={handleClose} accessibilityLabel="닫기" hitSlop={8}>
-          <IconClose width={28} height={28} color="#FFFFFF" />
+          <IconClose width={28} height={28} color="#0D0D0D" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary">작품 등록</Text>
         <View style={{ width: 28 }} />
@@ -250,7 +250,7 @@ function ImageSelector({
           {canAddMore && (
             <Pressable
               onPress={onPick}
-              style={{ width: 112, height: 112, borderRadius: 8, borderWidth: 1, borderStyle: 'dashed', borderColor: '#2A2A2A', alignItems: 'center', justifyContent: 'center' }}
+              style={{ width: 112, height: 112, borderRadius: 8, borderWidth: 1, borderStyle: 'dashed', borderColor: '#E5E5E5', alignItems: 'center', justifyContent: 'center' }}
               accessibilityLabel="이미지 추가"
               accessibilityRole="button"
             >
@@ -270,7 +270,7 @@ function ImageSelector({
                 style={{ position: 'absolute', top: -8, right: -8, width: 24, height: 24, borderRadius: 12, backgroundColor: '#EF4444', alignItems: 'center', justifyContent: 'center' }}
                 accessibilityLabel={`이미지 ${index + 1} 삭제`}
               >
-                <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#F5F5F5' }}>X</Text>
+                <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#0D0D0D' }}>X</Text>
               </Pressable>
             </View>
           ))}

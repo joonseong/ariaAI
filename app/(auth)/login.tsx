@@ -180,11 +180,11 @@ export default function LoginScreen() {
             <Pressable
               onPress={() => handleSocialLogin('google')}
               disabled={socialLoading !== null}
-              style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#262626', alignItems: 'center', justifyContent: 'center' }}
+              style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' }}
               accessibilityLabel="구글로 로그인"
             >
               {socialLoading === 'google' ? (
-                <ActivityIndicator size="small" color="#F5F5F5" />
+                <ActivityIndicator size="small" color="#0D0D0D" />
               ) : (
                 <IconGoogle width={24} height={24} />
               )}

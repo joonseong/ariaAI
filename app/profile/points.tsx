@@ -114,7 +114,7 @@ export default function PointsScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={['top']}>
       <View className="flex-row items-center justify-between px-4 py-3">
         <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기" hitSlop={8}>
-          <IconBack width={28} height={28} color="#FFFFFF" />
+          <IconBack width={28} height={28} color="#0D0D0D" />
         </Pressable>
         <Text className="text-base font-semibold text-text-primary">포인트 충전</Text>
         <View style={{ width: 28 }} />

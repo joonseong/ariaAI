@@ -47,7 +47,7 @@ export default function GuestbookMessage({
                 paddingVertical: 10,
               }}
             >
-              <Text style={{ fontSize: 15, color: '#FFFFFF', lineHeight: 21 }}>
+              <Text style={{ fontSize: 15, color: '#0D0D0D', lineHeight: 21 }}>
                 {message.content}
               </Text>
             </View>
@@ -82,14 +82,14 @@ export default function GuestbookMessage({
           {/* 버블 */}
           <View
             style={{
-              backgroundColor: '#1A1A1A',
+              backgroundColor: '#F0F0F0',
               borderRadius: 18,
               borderBottomLeftRadius: 4,
               paddingHorizontal: 14,
               paddingVertical: 10,
             }}
           >
-            <Text style={{ fontSize: 15, color: '#F5F5F5', lineHeight: 21 }}>
+            <Text style={{ fontSize: 15, color: '#0D0D0D', lineHeight: 21 }}>
               {message.content}
             </Text>
           </View>
@@ -122,7 +122,7 @@ export default function GuestbookMessage({
               paddingVertical: 10,
             }}
           >
-            <Text style={{ fontSize: 15, color: '#FFFFFF', lineHeight: 21 }}>
+            <Text style={{ fontSize: 15, color: '#0D0D0D', lineHeight: 21 }}>
               {message.replyContent}
             </Text>
           </View>

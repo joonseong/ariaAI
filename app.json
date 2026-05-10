@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "scheme": "aria",
     "orientation": "portrait",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,18 +13,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#0D0D0D"
     },
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.minimal.aria",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "appleTeamId": "QB5LWB6R86"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0D0D0D"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

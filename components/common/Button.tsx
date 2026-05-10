@@ -28,7 +28,7 @@ export function Button({
 
   switch (variant) {
     case 'secondary':
-      variantClass = 'h-10 rounded-lg border border-border px-4';
+      variantClass = 'h-12 rounded-xl border border-border px-4';
       textClass = 'text-sm font-medium text-text-primary';
       break;
     case 'icon':

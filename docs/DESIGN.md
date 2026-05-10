@@ -57,14 +57,25 @@
 ## 3. 타이포그래피
 
 시스템 폰트 기반 (iOS: SF Pro, Android: Roboto).
+**상세 규칙은 [`docs/TYPOGRAPHY.md`](./TYPOGRAPHY.md) 참조.**
 
-| 용도 | 크기 | 굵기 | 행간 |
-|------|------|------|------|
-| 화면 제목 | 24px | Bold (700) | 32px |
-| 섹션 제목 | 18px | SemiBold (600) | 24px |
-| 본문 | 14px | Regular (400) | 20px |
-| 캡션 | 12px | Regular (400) | 16px |
-| 작품 타이틀 | 16px | Medium (500) | 22px |
+### 타입 스케일 요약
+
+| 토큰 | 크기 | NativeWind | 허용 굵기 |
+|------|------|------------|----------|
+| display | 32px | `text-3xl` | Bold (700) |
+| title | 24px | `text-2xl` | Bold (700) |
+| heading | 20px | `text-xl` | Bold / SemiBold |
+| subheading | 18px | `text-lg` | Bold / SemiBold |
+| body | 16px | `text-base` | SemiBold / Medium |
+| small | 14px | `text-sm` | SemiBold / Medium |
+| caption | 13px | `text-caption` | Medium / Regular |
+
+### 핵심 원칙 (3가지)
+
+1. **최소 굵기는 Medium(500)** — 다크 배경에서 Regular(400)는 가독성 저하. 단, 12px 캡션 예외.
+2. **계층은 3단계 이하** — 크기·굵기·색상 3축으로 L1/L2/L3를 구분. 인접 요소는 최소 1축이 달라야 함.
+3. **동일 레벨은 동일 스타일** — 섹션 헤딩은 `text-base font-semibold`, 카드 제목도 `text-base font-semibold`로 앱 전체 통일.
 
 ---
 

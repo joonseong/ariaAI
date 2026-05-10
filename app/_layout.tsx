@@ -55,7 +55,7 @@ export default function RootLayout() {
       </Stack>
       <ToastContainer />
       <OfflineBanner />
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </>
   );
 }

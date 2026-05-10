@@ -54,7 +54,7 @@ export default function ArtistPortfolioScreen() {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <Pressable onPress={() => router.back()} className="px-4 py-3">
-          <IconBack width={28} height={28} color="#FFFFFF" />
+          <IconBack width={28} height={28} color="#0D0D0D" />
         </Pressable>
         <ErrorState message={error ?? '작가를 찾을 수 없습니다'} onRetry={error ? load : undefined} />
       </SafeAreaView>
@@ -65,7 +65,7 @@ export default function ArtistPortfolioScreen() {
     <View>
       <View className="flex-row items-center px-4 py-3">
         <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기">
-          <IconBack width={28} height={28} color="#FFFFFF" />
+          <IconBack width={28} height={28} color="#0D0D0D" />
         </Pressable>
       </View>
       <View className="items-center px-6 pb-4">

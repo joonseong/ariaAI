@@ -38,7 +38,7 @@ export function Skeleton({ width, height, borderRadius = 8 }: SkeletonProps) {
     width: width as number,
     height: height as number,
     borderRadius,
-    backgroundColor: '#262626',
+    backgroundColor: '#F0F0F0',
   };
 
   return <Animated.View style={[style, { opacity }]} />;

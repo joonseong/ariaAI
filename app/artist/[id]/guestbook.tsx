@@ -59,11 +59,11 @@ export default function GuestbookScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }} edges={['top']}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#2A2A2A' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#E5E5E5' }}>
         <Pressable onPress={() => router.back()} accessibilityLabel="뒤로가기">
-          <IconBack width={28} height={28} color="#FFFFFF" />
+          <IconBack width={28} height={28} color="#0D0D0D" />
         </Pressable>
-        <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: '#F5F5F5' }}>방명록</Text>
+        <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: '600', color: '#0D0D0D' }}>방명록</Text>
       </View>
 
       {isLoading ? (
@@ -113,7 +113,7 @@ export default function GuestbookScreen() {
       ) : (
         <Pressable
           onPress={() => setLoginPromptVisible(true)}
-          style={{ borderTopWidth: 1, borderTopColor: '#2A2A2A', backgroundColor: '#262626', paddingHorizontal: 16, paddingVertical: 14 }}
+          style={{ borderTopWidth: 1, borderTopColor: '#E5E5E5', backgroundColor: '#F0F0F0', paddingHorizontal: 16, paddingVertical: 14 }}
         >
           <Text style={{ textAlign: 'center', fontSize: 14, color: '#808080' }}>로그인 후 작성 가능합니다</Text>
         </Pressable>

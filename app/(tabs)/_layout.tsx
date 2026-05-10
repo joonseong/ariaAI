@@ -42,7 +42,7 @@ function FAB() {
       accessibilityLabel="작품 등록"
       accessibilityRole="button"
     >
-      <IconPlus width={28} height={28} fill="#FFFFFF" color="#FFFFFF" />
+      <IconPlus width={28} height={28} fill="#FFFFFF" color="#0D0D0D" />
     </Pressable>
   );
 }
@@ -54,8 +54,8 @@ export default function TabsLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: '#262626',
-            borderTopColor: '#2A2A2A',
+            backgroundColor: '#F0F0F0',
+            borderTopColor: '#E5E5E5',
           },
           tabBarActiveTintColor: '#F53356',
           tabBarInactiveTintColor: '#808080',
