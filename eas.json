@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 18.11.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "AIzaSyBF1h4JXYLq-z1Nu8jyfpgR3oT_uuQNP6c",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "aria-17957.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "aria-17957",
+        "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET": "aria-17957.firebasestorage.app",
+        "EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "1082441690200",
+        "EXPO_PUBLIC_FIREBASE_APP_ID": "1:1082441690200:web:3993bd11f194f0985b2e2d",
+        "EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY": "2f6211743e4b1607294adc9b735e141f",
+        "EXPO_PUBLIC_KAKAO_FIREBASE_CF_URL": "https://kakaoauth-maoakp34bq-uc.a.run.app",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "1082441690200-rnen6nj18j2sdj77up8m9qu9vg4m4qe0.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "1082441690200-cjt36idav5cbmgb1i0e438rdl4oq3fdo.apps.googleusercontent.com"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
