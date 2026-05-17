@@ -20,6 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.minimal.aria2",
+      "buildNumber": "2",
       "usesAppleSignIn": true,
       "appleTeamId": "QB5LWB6R86",
       "infoPlist": {
