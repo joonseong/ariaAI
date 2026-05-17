@@ -19,9 +19,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.minimal.aria",
+      "bundleIdentifier": "com.minimal.aria.signin",
       "usesAppleSignIn": true,
-      "appleTeamId": "QB5LWB6R86"
+      "appleTeamId": "QB5LWB6R86",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -57,6 +60,13 @@
           "nativeAppKey": "2f6211743e4b1607294adc9b735e141f"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e2b20db6-a1d1-4fb2-af39-5944604cebb9"
+      }
+    },
+    "owner": "joonsays-organization"
   }
 }
